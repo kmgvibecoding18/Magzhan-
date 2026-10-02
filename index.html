@@ -1,0 +1,1575 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ТС-Помощник</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --brand:#0A5F7F; --brand-d:#074A63; --brand-dd:#053A4E; --brand-l:#E7F1F5; --brand-ll:#F3F8FA;
+  --gold:#B8955A; --gold-l:#C9A96A;
+  --bg:#F1F5F8; --panel:#FFFFFF; --line:#D8E1E8; --line-2:#E8EEF2;
+  --text:#25313B; --muted:#5B6976;
+  --red:#A9473C; --red-bg:#F8E5E2; --yel:#94690F; --yel-bg:#FBF0D3; --green:#3A7A55; --green-bg:#E3F1E8;
+  --radius:10px;
+  --orn:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 14'%3E%3Cg fill='none' stroke='%23C9A96A' stroke-width='1.2' stroke-linecap='round'%3E%3Cpath d='M20 13V8c0-3-2.5-5-5-5s-4 1.6-4 3.5 1.4 3 3 3 2.4-1 2.4-2.2-.8-1.6-1.6-1.6'/%3E%3Cpath d='M20 8c0-3 2.5-5 5-5s4 1.6 4 3.5-1.4 3-3 3-2.4-1-2.4-2.2.8-1.6 1.6-1.6'/%3E%3Cpath d='M0 13h40'/%3E%3C/g%3E%3C/svg%3E");
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:Inter,"PT Sans",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:15px;line-height:1.5;color:var(--text);background:var(--bg)}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.muted{color:var(--muted)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* Header */
+.hdr{background:var(--brand);color:#fff;display:flex;align-items:center;gap:16px;padding:0 20px;height:60px}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.logo{width:38px;height:38px;flex:none}
+.brand-name{font-weight:700;font-size:17px;letter-spacing:.01em}
+.brand-sub{font-size:12.5px;opacity:.82;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hdr-actions{margin-left:auto;display:flex;align-items:center;gap:8px}
+.hbtn{display:inline-flex;align-items:center;gap:8px;background:transparent;border:1px solid rgba(255,255,255,.28);color:#fff;border-radius:8px;padding:6px 12px;cursor:pointer}
+.hbtn:hover{background:rgba(255,255,255,.08)}
+.hbtn svg{width:16px;height:16px}
+.avatar{width:24px;height:24px;border-radius:50%;background:#fff;color:var(--brand);display:inline-grid;place-items:center;font-weight:700;font-size:12px}
+.lang{display:inline-flex;border:1px solid rgba(255,255,255,.28);border-radius:8px;overflow:hidden}
+.lang button{background:transparent;border:0;color:#fff;padding:6px 10px;cursor:pointer;font-weight:600;font-size:13px}
+.lang button[aria-pressed="true"]{background:#fff;color:var(--brand)}
+.orn-line{height:12px;background:var(--brand-d) var(--orn) repeat-x center/36px 12px;opacity:.95}
+
+/* Intake */
+.intake{background:var(--panel);border-bottom:1px solid var(--line);padding:16px 20px}
+.intake-grid{display:grid;grid-template-columns:minmax(250px,1fr) minmax(320px,1.6fr) minmax(260px,1fr);gap:18px;align-items:start}
+.lbl{display:block;font-size:12.5px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin:0 0 6px}
+.drop{border:1.5px dashed #9FB6C4;border-radius:var(--radius);background:var(--brand-ll);padding:12px 14px;display:flex;gap:12px;align-items:center;cursor:pointer;transition:background .15s,border-color .15s}
+.drop:hover,.drop.over{background:var(--brand-l);border-color:var(--brand)}
+.drop svg{width:28px;height:28px;flex:none;color:var(--brand)}
+.drop strong{display:block;color:var(--brand-d);font-weight:600}
+.drop small{display:block;color:var(--muted);font-size:12.5px;line-height:1.35}
+.files{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--brand-ll);border:1px solid var(--line);border-radius:999px;padding:2px 4px 2px 10px;font-size:12.5px;max-width:100%}
+.chip .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:170px}
+.chip .st{color:var(--muted)}
+.chip .st.ok{color:var(--green)}
+.chip button{border:0;background:transparent;cursor:pointer;color:var(--muted);width:22px;height:22px;border-radius:50%}
+.chip button:hover{background:var(--line-2)}
+.spin{display:inline-block;width:12px;height:12px;border:2px solid var(--line);border-top-color:var(--brand);border-radius:50%;animation:sp 0.8s linear infinite;vertical-align:-2px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.sel1c{margin-top:10px}
+select,input[type=text],input[type=number],textarea{width:100%;border:1px solid var(--line);border-radius:8px;background:#fff;padding:8px 10px}
+select:focus,input:focus,textarea:focus{outline:2px solid var(--brand);outline-offset:0;border-color:var(--brand)}
+textarea#need{min-height:78px;resize:vertical;line-height:1.45}
+.need-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;border-radius:8px;padding:8px 14px;cursor:pointer;font-weight:500;white-space:nowrap}
+.btn:hover{border-color:#B8C7D2;background:var(--brand-ll)}
+.btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn.primary:hover{background:var(--brand-d)}
+.btn.link{border-color:transparent;background:transparent;color:var(--brand);padding-left:6px;padding-right:6px}
+.btn.link:hover{text-decoration:underline;background:transparent}
+.btn.sm{padding:4px 10px;font-size:13px}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.modes{display:grid;gap:8px}
+.mode{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:8px;padding:8px 10px;cursor:pointer;background:#fff}
+.mode:has(input:checked){border-color:var(--brand);background:var(--brand-ll);box-shadow:inset 3px 0 0 var(--brand)}
+.mode input{margin-top:4px;accent-color:var(--brand)}
+.mode b{display:block;font-weight:600;font-size:14px}
+.mode small{display:block;color:var(--muted);font-size:12.5px;line-height:1.35}
+.conf{display:flex;gap:8px;align-items:center;margin-top:10px;font-size:13.5px;cursor:pointer}
+.conf input{accent-color:var(--brand);width:16px;height:16px}
+
+/* Extracted */
+.extract{margin-top:14px;border:1px solid var(--line);border-radius:var(--radius);background:var(--brand-ll);padding:12px 14px}
+.extract-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.extract-head b{color:var(--brand-d)}
+.tag{font-size:11.5px;font-weight:600;border-radius:999px;padding:1px 8px;background:#fff;border:1px solid var(--line);color:var(--muted)}
+.extract-grid{display:grid;grid-template-columns:repeat(5,minmax(120px,1fr));gap:10px}
+.extract-grid label span{display:block;font-size:12px;color:var(--muted);margin-bottom:3px}
+.extract-grid input{padding:6px 8px;font-size:14px}
+.cons{margin-top:10px;display:grid;gap:6px}
+.cons-row{display:grid;grid-template-columns:auto 1.4fr 1fr 90px;gap:10px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:8px;padding:6px 10px}
+.cons-row input[type=checkbox]{accent-color:var(--brand);width:16px;height:16px}
+.cons-row input[type=text],.cons-row input[type=number]{padding:4px 8px;font-size:13.5px}
+.x{margin-left:auto;border:0;background:transparent;cursor:pointer;font-size:18px;color:var(--muted);width:28px;height:28px;border-radius:6px}
+.x:hover{background:var(--line-2)}
+
+/* Workspace */
+.ws{display:grid;grid-template-columns:var(--split,60%) 10px 1fr;padding:16px 20px 24px}
+.pane{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);display:flex;flex-direction:column;height:max(560px,calc(100vh - 120px));min-width:0}
+.pane-head{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line-2);flex-wrap:wrap}
+.pane-head h2{font-size:15px;margin:0;font-weight:600}
+.doc-name{color:var(--muted);font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:280px}
+.spacer{flex:1}
+.chan{font-size:12px;border:1px solid var(--line);border-radius:999px;padding:2px 10px;color:var(--muted);background:var(--brand-ll);display:inline-flex;gap:6px;align-items:center}
+.chan i{width:7px;height:7px;border-radius:50%;background:var(--brand)}
+.chan.loc i{background:var(--gold)}
+.ibtn{border:1px solid var(--line);background:#fff;border-radius:6px;width:30px;height:30px;cursor:pointer;font-size:16px;line-height:1}
+.ibtn:hover{background:var(--brand-ll)}
+.ed-wrap{position:relative;flex:1;min-height:0;overflow:auto}
+#editor{white-space:pre-wrap;word-wrap:break-word;padding:20px 26px 40px;min-height:100%;outline:none;line-height:1.62;font-size:15px}
+.ed-ph{position:absolute;inset:20px 26px auto 26px;color:#8A97A3;pointer-events:none;line-height:1.6}
+.ln-title{font-weight:700;letter-spacing:.06em;color:var(--brand-dd)}
+.ln-h{font-weight:700;color:var(--brand-d)}
+.ln-sub{font-weight:600}
+#editor mark{color:inherit;cursor:pointer;border-radius:2px;padding:0 1px}
+#editor mark.m-crit{background:var(--red-bg);box-shadow:inset 0 -2px 0 var(--red)}
+#editor mark.m-warn{background:var(--yel-bg);box-shadow:inset 0 -2px 0 var(--yel)}
+#editor mark.flash,.iss.flash{animation:fl 1.2s ease}
+@keyframes fl{0%,60%{outline:2px solid var(--brand);outline-offset:2px}100%{outline:2px solid transparent}}
+.pane-foot{border-top:1px solid var(--line-2);padding:12px 14px;display:grid;gap:10px}
+.btn-kz{position:relative;width:100%;background:var(--brand);color:#fff;border:1px solid var(--gold);border-radius:9px;padding:21px 16px 20px;cursor:pointer;display:grid;gap:1px;justify-items:center;overflow:hidden}
+.btn-kz::before,.btn-kz::after{content:"";position:absolute;left:0;right:0;height:12px;background:var(--orn) repeat-x center/36px 12px;opacity:.95}
+.btn-kz::before{top:3px;transform:scaleY(-1)}
+.btn-kz::after{bottom:3px}
+.btn-kz:hover{background:var(--brand-d)}
+.kz-main{font-size:17px;font-weight:600;letter-spacing:.02em}
+.kz-main em{font-style:normal;color:var(--gold-l)}
+.kz-sub{font-size:12.5px;opacity:.85}
+.foot-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.status{margin-left:auto;font-size:12.5px;color:var(--muted)}
+.menu-wrap{position:relative}
+.menu{position:absolute;bottom:calc(100% + 6px);left:0;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 30px rgba(10,40,60,.14);min-width:280px;padding:6px;z-index:20}
+.menu button{display:flex;width:100%;text-align:left;border:0;background:transparent;padding:8px 10px;border-radius:6px;cursor:pointer;gap:10px;align-items:center}
+.menu button:hover,.menu button:focus-visible{background:var(--brand-ll)}
+.menu hr{border:0;border-top:1px solid var(--line-2);margin:4px 0}
+.menu .ext{font-size:11px;font-weight:700;color:var(--brand);border:1px solid var(--line);border-radius:4px;padding:0 5px;min-width:42px;text-align:center}
+.splitter{cursor:col-resize;display:flex;align-items:center;justify-content:center}
+.splitter::after{content:"";width:3px;height:42px;border-radius:2px;background:var(--line)}
+.splitter:hover::after,.splitter.drag::after{background:var(--brand)}
+.mini-score{display:none}
+.drop-ts{width:100%;margin-top:8px;text-align:left;border-style:solid;border-color:var(--line);background:#fff;font:inherit;color:inherit}
+.drop-ts.over{border-style:dashed}
+.ed-info{display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap;padding:10px 14px;background:var(--brand-ll);border-bottom:1px solid var(--line-2);font-size:13.5px}
+.ed-info[hidden]{display:none}
+.ed-info .txt{flex:1;min-width:240px}
+.ed-info .acts{display:flex;gap:6px;flex-wrap:wrap}
+.ed-wrap.over{outline:2px dashed var(--brand);outline-offset:-6px;background:var(--brand-ll)}
+.mlab{display:block;font-size:11.5px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;padding:6px 10px 2px}
+.kz-foot{flex-direction:column;align-items:stretch;gap:8px}
+.kz-act{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end}
+.kz-grp{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.kz-grp .mlab{width:100%;padding:0}
+.kz-act #kzDone{margin-left:auto}
+.kz-flag.word{color:var(--yel);cursor:help}
+#dlgKz .kz-body{min-height:220px}
+#dlgKz .dlg-f{flex:none}
+@media (max-width:760px),(max-height:700px){
+  .kz-foot{gap:4px;padding:8px 12px}
+  .kz-foot .btn{padding:5px 10px;font-size:13px}
+  .kz-foot > small,.kz-legend{display:none}
+}
+
+/* Score pane */
+.sc-scroll{flex:1;overflow:auto;padding:16px}
+.gauge-block{display:flex;gap:16px;align-items:center;padding-bottom:14px;border-bottom:1px solid var(--line-2)}
+.gauge{position:relative;width:126px;height:126px;flex:none}
+.gauge svg{width:100%;height:100%;transform:rotate(-90deg)}
+.g-bg{fill:none;stroke:var(--line-2);stroke-width:11}
+.g-fg{fill:none;stroke:var(--muted);stroke-width:11;stroke-linecap:round;transition:stroke-dasharray .5s ease,stroke .3s}
+.g-pct{position:absolute;inset:0;display:grid;place-items:center;font-size:30px;font-weight:700;letter-spacing:-.02em}
+.g-label{font-size:12.5px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.g-zone{font-size:17px;font-weight:600;margin:4px 0;display:flex;gap:8px;align-items:center}
+.zi{width:22px;height:22px;border-radius:50%;display:inline-grid;place-items:center;font-size:13px;font-weight:700;color:#fff;flex:none}
+.zi.red{background:var(--red)}.zi.yel{background:var(--yel)}.zi.green{background:var(--green)}
+.g-time{font-size:12.5px;color:var(--muted)}
+.crit{display:grid;gap:4px;padding:12px 0;border-bottom:1px solid var(--line-2)}
+.crow{display:grid;grid-template-columns:1fr 90px 44px 26px;gap:10px;align-items:center;border:0;background:transparent;text-align:left;padding:6px 8px;border-radius:7px;cursor:pointer}
+.crow:hover{background:var(--brand-ll)}
+.crow.on{background:var(--brand-l)}
+.cname{font-size:14px}
+.cname small{color:var(--muted);font-size:11.5px;margin-left:4px}
+.cbar{height:7px;background:var(--line-2);border-radius:4px;overflow:hidden}
+.cbar i{display:block;height:100%;border-radius:4px}
+.cbar i.red{background:var(--red)}.cbar i.yel{background:#C3921E}.cbar i.green{background:var(--green)}
+.cpct{font-weight:600;font-size:13.5px;text-align:right}
+.cn{font-size:12px;text-align:center;border-radius:999px;background:var(--line-2);color:var(--muted);padding:0 4px}
+.cn.ok{background:var(--green-bg);color:var(--green)}
+.sc-h{display:flex;align-items:center;gap:8px;margin:16px 0 8px;font-size:14px;font-weight:600}
+.sc-h .cnt{font-weight:500;color:var(--muted)}
+.sc-h .btn{margin-left:auto}
+.iss{border:1px solid var(--line);border-left:4px solid var(--yel);border-radius:8px;padding:10px 12px;margin-bottom:8px;background:#fff}
+.iss.crit{border-left-color:var(--red)}
+.iss-top{display:flex;justify-content:space-between;gap:8px;font-size:12px;margin-bottom:4px}
+.sev{font-weight:700;display:inline-flex;gap:5px;align-items:center}
+.sev.crit{color:var(--red)}.sev.warn{color:var(--yel)}
+.icrit{color:var(--muted)}
+.iprob{font-size:14px}
+.iquote{display:block;margin:6px 0;border:0;background:var(--brand-ll);border-radius:6px;padding:4px 8px;font-size:13px;color:var(--brand-d);cursor:pointer;text-align:left;width:100%;font-style:italic}
+.iquote:hover{background:var(--brand-l)}
+.isug{font-size:13px;background:var(--green-bg);border-radius:6px;padding:6px 8px;margin-top:6px}
+.isug span{font-weight:600;color:var(--green)}
+.iact{display:flex;gap:6px;margin-top:8px}
+.std{border:1px solid var(--line);border-radius:8px;padding:8px 10px;margin-bottom:6px;display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center}
+.std b{font-size:14px}
+.std small{grid-column:1;color:var(--muted);font-size:12.5px;line-height:1.35}
+.stat{font-size:11.5px;font-weight:600;border-radius:999px;padding:1px 8px;display:inline-block;margin-left:6px}
+.stat.ok{background:var(--green-bg);color:var(--green)}
+.stat.bad{background:var(--red-bg);color:var(--red)}
+.std .btn{grid-row:1/span 2;grid-column:2}
+.note{font-size:12.5px;color:var(--muted);background:var(--brand-ll);border-radius:8px;padding:8px 10px;margin-bottom:6px}
+.disclaimer{flex:none;border-top:1px solid var(--line-2);padding:10px 16px;font-size:12.5px;color:var(--muted);display:flex;gap:8px;align-items:flex-start;background:var(--brand-ll);border-radius:0 0 var(--radius) var(--radius)}
+.disclaimer svg{width:16px;height:16px;flex:none;margin-top:1px;color:var(--brand)}
+
+/* Dialogs */
+dialog{border:0;border-radius:14px;padding:0;box-shadow:0 20px 60px rgba(10,40,60,.25);color:var(--text);max-width:calc(100vw - 32px)}
+dialog::backdrop{background:rgba(12,32,45,.45)}
+.dlg-h{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line-2)}
+.dlg-h h3{margin:0;font-size:16px}
+.dlg-b{padding:16px 18px}
+.dlg-f{display:flex;gap:8px;justify-content:flex-end;padding:12px 18px;border-top:1px solid var(--line-2);flex-wrap:wrap;align-items:center}
+.q{margin-bottom:12px}
+.q label{display:block;font-weight:600;font-size:14px;margin-bottom:4px}
+.q small{display:block;color:var(--muted);font-size:12.5px;margin-top:3px}
+#dlgClarify{width:560px}
+#dlgKz{width:min(1200px,96vw);height:90vh}
+#dlgKz[open]{display:flex;flex-direction:column}
+.kz-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);padding:8px 18px;border-bottom:1px solid var(--line-2);background:var(--brand-ll)}
+.kz-legend span{display:inline-flex;gap:6px;align-items:center}
+.kz-body{flex:1;overflow:auto;padding:0 18px}
+.kz-grid{display:grid;grid-template-columns:1fr 1fr 28px}
+.kz-colh{position:sticky;top:0;background:#fff;font-weight:600;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;padding:10px 12px;border-bottom:1px solid var(--line);z-index:1}
+.kz-ru,.kz-kz{padding:5px 12px;border-bottom:1px solid var(--line-2);white-space:pre-wrap;line-height:1.55}
+.kz-ru{color:#3A4752;border-right:1px solid var(--line-2)}
+.kz-kz{outline:none}
+.kz-kz:focus{background:var(--brand-ll)}
+.kz-flag{border-bottom:1px solid var(--line-2);display:grid;place-items:center;font-size:14px}
+.kz-flag.bad{color:var(--red);cursor:help}
+.kz-row-bad{background:var(--red-bg)!important}
+.gl{box-shadow:inset 0 -2px 0 #7FB394}
+.unk{background:var(--yel-bg);box-shadow:inset 0 -2px 0 var(--yel)}
+.legend-gl{width:22px;height:10px;box-shadow:inset 0 -2px 0 #7FB394}
+.legend-unk{width:22px;height:10px;background:var(--yel-bg);box-shadow:inset 0 -2px 0 var(--yel)}
+.kz-stats{font-size:13px;color:var(--muted);margin-right:auto}
+#dlgHistory{margin:0 0 0 auto;height:100vh;max-height:100vh;width:min(440px,100vw);border-radius:0}
+#dlgHistory[open]{display:flex;flex-direction:column}
+.hist{flex:1;overflow:auto;padding:12px 18px}
+.hcard{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:8px}
+.hcard.cur{border-color:var(--brand);box-shadow:inset 3px 0 0 var(--brand)}
+.hcard b{display:block;font-size:14px}
+.hmeta{font-size:12.5px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap;margin:2px 0 8px}
+.hact{display:flex;gap:6px;flex-wrap:wrap}
+.pill{font-size:11.5px;font-weight:600;border-radius:999px;padding:0 8px}
+.pill.red{background:var(--red-bg);color:var(--red)}.pill.yel{background:var(--yel-bg);color:var(--yel)}.pill.green{background:var(--green-bg);color:var(--green)}
+#dlgProfile{width:560px}
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pgrid label span{display:block;font-size:12.5px;color:var(--muted);margin-bottom:3px}
+.wgrid{display:grid;grid-template-columns:1fr 80px;gap:6px 12px;align-items:center;margin-top:8px}
+.wgrid input{padding:4px 8px}
+fieldset{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:14px 0 0}
+legend{font-size:13px;font-weight:600;padding:0 6px}
+
+/* Busy + toast */
+.busy{position:fixed;inset:0;background:rgba(241,245,248,.72);display:grid;place-items:center;z-index:50}
+.busy[hidden]{display:none}
+.busy-card{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 20px 50px rgba(10,40,60,.18);padding:18px 22px;width:min(420px,calc(100vw - 32px))}
+.busy-card h4{margin:0 0 10px;font-size:15px;display:flex;gap:10px;align-items:center}
+.busy-steps{list-style:none;margin:0;padding:0;display:grid;gap:5px;font-size:13.5px}
+.busy-steps li{color:#A0ACB6;display:flex;gap:8px;align-items:center}
+.busy-steps li.on{color:var(--text)}
+.busy-steps li.done{color:var(--green)}
+.busy-steps li::before{content:"○";width:14px}
+.busy-steps li.on::before{content:"●";color:var(--brand)}
+.busy-steps li.done::before{content:"✓"}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--brand-dd);color:#fff;padding:10px 16px;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.2);font-size:14px;z-index:60;max-width:calc(100vw - 32px);opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.show{opacity:1}
+#printArea{display:none}
+
+/* Tablet / narrow */
+@media (max-width:1100px){
+  .intake-grid{grid-template-columns:1fr 1fr}
+  .intake-grid > :nth-child(2){grid-column:1/-1;order:-1}
+  .extract-grid{grid-template-columns:repeat(3,1fr)}
+  .ws{grid-template-columns:1fr;gap:14px}
+  .splitter{display:none}
+  .pane{height:auto}
+  .ed-pane .ed-wrap{min-height:420px;max-height:70vh}
+  .sc-pane{order:-1}
+  .sc-scroll{max-height:none}
+  .mini-score{display:flex;position:sticky;top:0;z-index:5;gap:10px;align-items:center;padding:8px 14px;background:var(--brand-ll);border-bottom:1px solid var(--line-2);font-size:13.5px;font-weight:600}
+  .ed-pane{position:relative}
+}
+@media (max-width:640px){
+  .hdr{padding:0 12px;gap:8px}
+  .brand-sub,.hbtn .hl{display:none}
+  .intake,.ws{padding-left:16px;padding-right:16px}
+  .intake-grid{grid-template-columns:1fr}
+  .extract-grid{grid-template-columns:1fr 1fr}
+  .cons-row{grid-template-columns:auto 1fr;}
+  .cons-row input{grid-column:2}
+  .gauge-block{flex-direction:column;align-items:flex-start}
+  .pgrid{grid-template-columns:1fr}
+  .kz-grid{grid-template-columns:1fr 24px}
+  .kz-ru{grid-column:1/-1;border-right:0;background:var(--brand-ll)}
+  .kz-colh:first-child{display:none}
+}
+@media print{
+  body{background:#fff}
+  body > *:not(#printArea){display:none!important}
+  #printArea{display:block;font-family:"Times New Roman",serif;font-size:12pt;line-height:1.45;color:#000;white-space:pre-wrap}
+  #printArea .p-title{text-align:center;font-weight:700;font-size:14pt;margin-bottom:8pt}
+  #printArea .p-h{font-weight:700;margin-top:6pt}
+  #printArea .p-break{break-before:page;page-break-before:always}
+}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="brand">
+    <svg class="logo" viewBox="0 0 40 40" aria-hidden="true"><rect x="1" y="1" width="38" height="38" rx="9" fill="none" stroke="#C9A96A" stroke-width="1.5"/><text x="20" y="25.5" text-anchor="middle" font-size="14" font-weight="700" fill="#fff" font-family="Inter,sans-serif">ТС</text></svg>
+    <div style="min-width:0">
+      <div class="brand-name">ТС-Помощник</div>
+      <div class="brand-sub" data-i18n="appSub"></div>
+    </div>
+  </div>
+  <div class="hdr-actions">
+    <button class="hbtn" id="btnHistory" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/><path d="M12 7v5l3 2"/></svg>
+      <span class="hl" data-i18n="history"></span>
+    </button>
+    <div class="lang" role="group" aria-label="Язык интерфейса / Интерфейс тілі">
+      <button type="button" data-lang="ru" aria-pressed="true">RU</button>
+      <button type="button" data-lang="kz" aria-pressed="false">KZ</button>
+    </div>
+    <button class="hbtn" id="btnProfile" type="button"><span class="avatar" id="profInit">И</span><span class="hl" id="profName">Инициатор</span></button>
+  </div>
+</header>
+<div class="orn-line" aria-hidden="true"></div>
+
+<section class="intake" aria-label="Исходные данные">
+  <div class="intake-grid">
+    <div>
+      <span class="lbl" data-i18n="srcData"></span>
+      <div class="drop" id="drop" tabindex="0" role="button" aria-describedby="dropHint">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
+        <div><strong data-i18n="upload"></strong><small id="dropHint" data-i18n="dropHint"></small></div>
+      </div>
+      <input type="file" id="fileInput" multiple accept=".pdf,.docx,.xlsx,.jpg,.jpeg,.png,.txt" hidden>
+      <div class="files" id="fileList"></div>
+      <button type="button" class="drop drop-ts" id="dropTs">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5"/><path d="m9 14 2 2 4-4"/></svg>
+        <div><strong data-i18n="loadOld"></strong><small data-i18n="loadOldD"></small></div>
+      </button>
+      <input type="file" id="tsInput" accept=".docx,.pdf,.txt,.doc,.rtf" hidden>
+      <label class="sel1c"><span class="lbl" style="margin-top:2px" data-i18n="from1c"></span>
+        <select id="sel1c"><option value="" data-i18n="notSelected"></option></select>
+      </label>
+    </div>
+    <div>
+      <label class="lbl" for="need" data-i18n="need"></label>
+      <textarea id="need" data-i18n-ph="needPh"></textarea>
+      <div class="need-row">
+        <button class="btn primary" id="btnGen" type="button">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg>
+          <span data-i18n="generate"></span></button>
+        <button class="btn" id="btnNew" type="button" data-i18n="newDoc"></button>
+        <button class="btn link" id="btnSample" type="button" data-i18n="sample"></button>
+      </div>
+    </div>
+    <div>
+      <span class="lbl" data-i18n="mode"></span>
+      <div class="modes" role="radiogroup">
+        <label class="mode"><input type="radio" name="mode" value="unif"><span><b data-i18n="unif"></b><small data-i18n="unifD"></small></span></label>
+        <label class="mode"><input type="radio" name="mode" value="equiv" checked><span><b data-i18n="equiv"></b><small data-i18n="equivD"></small></span></label>
+      </div>
+      <label class="conf"><input type="checkbox" id="conf"><span data-i18n="conf"></span></label>
+    </div>
+  </div>
+  <div class="extract" id="extract" hidden></div>
+</section>
+
+<main class="ws" id="ws">
+  <section class="pane ed-pane" aria-labelledby="edTitle">
+    <div class="pane-head">
+      <h2 id="edTitle" data-i18n="editor"></h2>
+      <span class="doc-name" id="docName"></span>
+      <span class="spacer"></span>
+      <span class="chan" id="chan"><i></i><span></span></span>
+      <button class="ibtn" id="btnUndo" type="button" title="Ctrl+Z" aria-label="Отменить">↶</button>
+      <button class="ibtn" id="btnRedo" type="button" title="Ctrl+Y" aria-label="Повторить">↷</button>
+    </div>
+    <div class="mini-score" id="miniScore" aria-live="polite"></div>
+    <div class="ed-info" id="edInfo" hidden></div>
+    <div class="ed-wrap">
+      <div id="editor" contenteditable="true" spellcheck="false" role="textbox" aria-multiline="true" aria-label="Текст технической спецификации"></div>
+      <div class="ed-ph" id="edPh" data-i18n="edPh"></div>
+    </div>
+    <div class="pane-foot">
+      <button class="btn-kz" id="btnKz" type="button">
+        <span class="kz-main"><em>◈</em> Қазақ тіліне аудару <em>◈</em></span>
+        <span class="kz-sub">Перевести на казахский</span>
+      </button>
+      <div class="foot-row">
+        <button class="btn primary" id="btnCheck" type="button">✓ <span data-i18n="check"></span></button>
+        <div class="menu-wrap">
+          <button class="btn" id="btnExport" type="button" aria-haspopup="menu" aria-expanded="false"><span data-i18n="export"></span> ▾</button>
+          <div class="menu" id="exportMenu" role="menu" hidden>
+            <div class="mlab" data-i18n="grpRu"></div>
+            <button role="menuitem" data-ex="ru"><span class="ext">DOCX</span><span data-i18n="exRu"></span></button>
+            <button role="menuitem" data-ex="pdf"><span class="ext">PDF</span><span data-i18n="exPdf"></span></button>
+            <button role="menuitem" data-ex="copy"><span class="ext">⧉</span><span data-i18n="cpRu"></span></button>
+            <hr>
+            <div class="mlab" data-i18n="grpKz"></div>
+            <button role="menuitem" data-ex="seq"><span class="ext">DOCX</span><span data-i18n="exSeq"></span></button>
+            <button role="menuitem" data-ex="bi"><span class="ext">DOCX</span><span data-i18n="exBi"></span></button>
+            <button role="menuitem" data-ex="kz"><span class="ext">DOCX</span><span data-i18n="exKz"></span></button>
+            <button role="menuitem" data-ex="pdfseq"><span class="ext">PDF</span><span data-i18n="exPdfSeq"></span></button>
+            <button role="menuitem" data-ex="cpkz"><span class="ext">⧉</span><span data-i18n="cpKz"></span></button>
+            <button role="menuitem" data-ex="cpseq"><span class="ext">⧉</span><span data-i18n="cpSeq"></span></button>
+            <hr>
+            <button role="menuitem" data-ex="1c"><span class="ext">1С</span><span data-i18n="ex1c"></span></button>
+          </div>
+        </div>
+        <span class="status" id="edStatus" aria-live="polite"></span>
+      </div>
+    </div>
+  </section>
+
+  <div class="splitter" id="splitter" role="separator" aria-orientation="vertical" tabindex="0" aria-label="Ширина панелей"></div>
+
+  <aside class="pane sc-pane" aria-labelledby="scTitle">
+    <div class="sc-scroll">
+      <div class="gauge-block">
+        <div class="gauge">
+          <svg viewBox="0 0 120 120" aria-hidden="true"><circle class="g-bg" cx="60" cy="60" r="50"/><circle class="g-fg" id="gFg" cx="60" cy="60" r="50" stroke-dasharray="0 314.16"/></svg>
+          <div class="g-pct" id="gPct">—</div>
+        </div>
+        <div>
+          <div class="g-label" id="scTitle" data-i18n="scoreTitle"></div>
+          <div class="g-zone" id="gZone" aria-live="polite"></div>
+          <div class="g-time" id="gTime"></div>
+        </div>
+      </div>
+      <div class="crit" id="critList"></div>
+      <div class="sc-h"><span data-i18n="issues"></span><span class="cnt" id="issCount"></span><button class="btn sm" id="btnAllIss" type="button" hidden data-i18n="all"></button></div>
+      <div id="issues"></div>
+      <div class="sc-h"><span data-i18n="stds"></span></div>
+      <div id="stds"></div>
+    </div>
+    <div class="disclaimer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>
+      <span data-i18n="disclaimer"></span>
+    </div>
+  </aside>
+</main>
+
+<!-- Уточняющие вопросы -->
+<dialog id="dlgClarify">
+  <form method="dialog">
+    <div class="dlg-h"><h3 data-i18n="clarTitle"></h3><button class="x" value="cancel" aria-label="Закрыть">×</button></div>
+    <div class="dlg-b" id="clarBody"></div>
+    <div class="dlg-f"><button class="btn" value="cancel" data-i18n="cancel"></button><button class="btn primary" value="ok" data-i18n="generate"></button></div>
+  </form>
+</dialog>
+
+<!-- Перевод -->
+<dialog id="dlgKz">
+  <div class="dlg-h"><h3>Қазақ тіліне аудару · Перевод на казахский</h3><span class="tag" id="kzChan"></span><button class="x" id="kzClose" aria-label="Закрыть">×</button></div>
+  <div class="kz-legend">
+    <span><i class="legend-gl"></i><span data-i18n="lgGl"></span></span>
+    <span><i class="legend-unk"></i><span data-i18n="lgUnk"></span></span>
+    <span><b style="color:var(--red)">⚠</b><span data-i18n="lgNum"></span></span>
+    <span><b style="color:var(--yel)">◐</b><span data-i18n="lgWord"></span></span>
+    <span id="kzIndustry"></span>
+  </div>
+  <div class="kz-body"><div class="kz-grid" id="kzGrid"></div></div>
+  <div class="dlg-f kz-foot">
+    <div class="kz-stats" id="kzStats"></div>
+    <div class="kz-act">
+      <div class="kz-grp"><span class="mlab" data-i18n="grpDl"></span>
+        <button class="btn primary" data-ex="seq">⤓ <span data-i18n="exSeq"></span></button>
+        <button class="btn" data-ex="bi">⤓ <span data-i18n="exBi"></span></button>
+        <button class="btn" data-ex="kz">⤓ <span data-i18n="exKz"></span></button>
+      </div>
+      <div class="kz-grp"><span class="mlab" data-i18n="grpCopy"></span>
+        <button class="btn" data-ex="cpkz">⧉ <span data-i18n="cpKz"></span></button>
+        <button class="btn" data-ex="cpseq">⧉ <span data-i18n="cpSeq"></span></button>
+      </div>
+      <button class="btn" id="kzDone" data-i18n="done"></button>
+    </div>
+    <small class="muted" data-i18n="kzTip"></small>
+  </div>
+</dialog>
+
+<!-- История -->
+<dialog id="dlgHistory">
+  <div class="dlg-h"><h3 data-i18n="histTitle"></h3><button class="x" id="histClose" aria-label="Закрыть">×</button></div>
+  <div class="hist" id="histList"></div>
+</dialog>
+
+<!-- Профиль -->
+<dialog id="dlgProfile">
+  <form method="dialog">
+    <div class="dlg-h"><h3 data-i18n="profile"></h3><button class="x" value="cancel" aria-label="Закрыть">×</button></div>
+    <div class="dlg-b">
+      <div class="pgrid">
+        <label><span data-i18n="pName"></span><input type="text" id="pName"></label>
+        <label><span data-i18n="pRole"></span><select id="pRole"><option value="init">Инициатор</option><option value="buyer">Специалист по закупкам</option><option value="admin">Администратор</option></select></label>
+        <label><span data-i18n="pEnt"></span><select id="pEnt"></select></label>
+        <label><span data-i18n="pInd"></span><select id="pInd"></select></label>
+      </div>
+      <fieldset id="wSet">
+        <legend data-i18n="weights"></legend>
+        <div class="wgrid" id="wGrid"></div>
+        <small class="muted" id="wSum"></small>
+      </fieldset>
+    </div>
+    <div class="dlg-f"><button class="btn" value="cancel" data-i18n="cancel"></button><button class="btn primary" value="ok" data-i18n="save"></button></div>
+  </form>
+</dialog>
+
+<div class="busy" id="busy" hidden><div class="busy-card"><h4><span class="spin"></span><span id="busyTitle"></span></h4><ul class="busy-steps" id="busySteps"></ul></div></div>
+<div class="toast" id="toast" role="status"></div>
+<div id="printArea"></div>
+
+<script>
+(function(){
+'use strict';
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const store={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const cap=s=>s?s[0].toUpperCase()+s.slice(1):s;
+const lowerFirst=s=>s?s[0].toLowerCase()+s.slice(1):s;
+const now=()=>new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
+
+/* ================= i18n ================= */
+const I18N={
+ appSub:['Подготовка, проверка и перевод технических спецификаций','Техникалық ерекшеліктерді дайындау, тексеру және аудару'],
+ history:['История','Тарих'], profile:['Профиль','Профиль'],
+ srcData:['Исходные данные','Бастапқы деректер'],
+ upload:['Загрузить паспорт / файлы','Төлқұжатты / файлдарды жүктеу'],
+ dropHint:['PDF, DOCX, XLSX, JPG/PNG, TXT · до 10 файлов по 50 МБ · можно перетащить','PDF, DOCX, XLSX, JPG/PNG, TXT · 50 МБ-тан 10 файлға дейін · сүйреп әкелуге болады'],
+ from1c:['или оборудование из 1С:УПП','немесе 1С:УПП-дағы жабдық'], notSelected:['— не выбрано —','— таңдалмаған —'],
+ need:['Что нужно закупить','Не сатып алу керек'],
+ needPh:['Например: фильтры масляные и воздушные на годовое ТО','Мысалы: жылдық ТҚК үшін май және ауа сүзгілері'],
+ generate:['Сформировать ТС','ТЕ қалыптастыру'], sample:['Пример ТС с ошибками','Қателері бар ТЕ үлгісі'], newDoc:['Новая ТС','Жаңа ТЕ'],
+ mode:['Режим замены','Ауыстыру режимі'],
+ unif:['Унификация','Біріздендіру'], unifD:['Строго оригинал / конкретная модель — сформируем обоснование','Тек түпнұсқа / нақты модель — негіздеме жасаймыз'],
+ equiv:['Допускается эквивалент','Баламаға рұқсат етіледі'], equivD:['Функциональные характеристики без привязки к бренду','Брендке байланыссыз функционалдық сипаттамалар'],
+ conf:['Конфиденциально — только локальная модель','Құпия — тек жергілікті модель'],
+ editor:['Редактор ТС','ТЕ редакторы'],
+ edPh:['Загрузите паспорт оборудования или опишите потребность выше и нажмите «Сформировать ТС». Готовую ТС можно вставить сюда — она будет проверена автоматически.','Жабдық төлқұжатын жүктеңіз немесе жоғарыда қажеттілікті сипаттап, «ТЕ қалыптастыру» батырмасын басыңыз. Дайын ТЕ-ні осында қоюға болады — ол автоматты түрде тексеріледі.'],
+ check:['Проверить','Тексеру'], export:['Экспорт','Экспорт'],
+ exRu:['Русская версия','Орысша нұсқа'], exKz:['Только KZ','Тек KZ'], exBi:['Таблица RU | KZ','RU | KZ кестесі'], exPdf:['PDF / печать','PDF / басып шығару'], exCopy:['Копировать в буфер','Буферге көшіру'], ex1c:['Создать заявку в 1С:УПП','1С:УПП-да өтінім жасау'],
+ scoreTitle:['Оценка корректности','Дұрыстығын бағалау'],
+ zRed:['Требуется доработка','Пысықтау қажет'], zYel:['Есть замечания','Ескертулер бар'], zGreen:['Готово к подаче','Беруге дайын'],
+ c_complete:['Полнота характеристик','Сипаттамалардың толықтығы'], c_procurement:['Соответствие Порядку закупок','Сатып алу тәртібіне сәйкестік'], c_standards:['Ссылки на стандарты','Стандарттарға сілтемелер'], c_clarity:['Однозначность формулировок','Тұжырымдардың бір мәнділігі'], c_measure:['Измеримость','Өлшенетіндігі'], c_structure:['Структура и оформление','Құрылымы мен ресімделуі'],
+ issues:['Замечания','Ескертулер'], all:['Показать все','Барлығын көрсету'], noIssues:['Замечаний по этому критерию нет','Бұл өлшемшарт бойынша ескертулер жоқ'],
+ apply:['Применить','Қолдану'], show:['Показать в тексте','Мәтіннен көрсету'], suggest:['Исправление','Түзету'],
+ sevCrit:['Критично','Маңызды'], sevWarn:['Рекомендация','Ұсыным'],
+ stds:['Рекомендуемые ГОСТ / СТ РК','Ұсынылатын ГОСТ / ҚР СТ'], addStd:['Добавить','Қосу'], stdNotFound:['Специальный стандарт на этот тип товара в базе не найден — номер не подставляется.','Бұл тауар түріне арналған арнайы стандарт базадан табылмады — нөмір қойылмайды.'], stdInText:['В тексте','Мәтінде'], stdBase:['Подбор только по локальной базе стандартов (демо-набор для прототипа).','Тек жергілікті стандарттар базасы бойынша (прототипке арналған демо-жинақ).'],
+ disclaimer:['Оценка сформирована ИИ и не заменяет проверку специалистом по закупкам.','Бағалауды ЖИ жасады және сатып алу маманының тексеруін алмастырмайды.'],
+ noText:['Нет текста для оценки','Бағалауға мәтін жоқ'], noTextHint:['Сформируйте или вставьте ТС — оценка появится автоматически.','ТЕ қалыптастырыңыз немесе қойыңыз — бағалау автоматты түрде пайда болады.'],
+ saved:['Черновик сохранён','Жоба сақталды'], pending:['Изменения… пересчёт через 3 с','Өзгерістер… 3 с кейін қайта есептеу'], checked:['Проверено','Тексерілді'],
+ chanExt:['Внешний API · обезличивание','Сыртқы API · иесіздендіру'], chanLoc:['Локальная модель','Жергілікті модель'],
+ found:['ИИ нашёл в паспорте — проверьте перед генерацией','ЖИ төлқұжаттан тапты — қалыптастыру алдында тексеріңіз'], card1c:['Карточка ОС из 1С:УПП','1С:УПП-дағы НҚ карточкасы'],
+ eqName:['Оборудование','Жабдық'], eqBrand:['Производитель','Өндіруші'], eqModel:['Модель','Модель'], eqSerial:['Зав. №','Зауыттық №'], eqYear:['Год выпуска','Шыққан жылы'], consT:['Расходники по паспорту','Төлқұжат бойынша шығыс материалдары'],
+ clarTitle:['Уточните, пожалуйста','Нақтылаңызшы'], cancel:['Отмена','Болдырмау'], save:['Сохранить','Сақтау'], done:['Готово','Дайын'],
+ lgGl:['термин из глоссария','глоссарий термині'], lgUnk:['нет в глоссарии — требует проверки','глоссарийде жоқ — тексеруді қажет етеді'], lgNum:['расхождение чисел / кодов','сандар / кодтар сәйкес емес'],
+ histTitle:['Мои ТС','Менің ТЕ-лерім'], open:['Открыть','Ашу'], copyFrom:['Создать на основе','Негізінде жасау'], del:['Удалить','Жою'], histEmpty:['Пока нет сохранённых ТС.','Сақталған ТЕ әзірге жоқ.'],
+ pName:['ФИО / подпись','Аты-жөні'], pRole:['Роль','Рөлі'], pEnt:['Предприятие','Кәсіпорын'], pInd:['Отрасль (глоссарий)','Сала (глоссарий)'], weights:['Веса критериев оценки (администратор)','Бағалау өлшемшарттарының салмағы (әкімші)'],
+ loadOld:['Загрузить старую ТС на проверку','Ескі ТЕ-ні тексеруге жүктеу'], loadOldD:['DOCX, PDF или TXT — анализ, проверка ГОСТ и перевод','DOCX, PDF немесе TXT — талдау, ГОСТ тексеру және аудару'],
+ grpRu:['Русская версия','Орысша нұсқа'], grpKz:['С казахским переводом','Қазақша аудармасымен'], grpDl:['Скачать','Жүктеп алу'], grpCopy:['Для портала закупок — копировать текст','Сатып алу порталы үшін — мәтінді көшіру'],
+ exSeq:['RU, затем KZ (текстом)','RU, кейін KZ (мәтінмен)'], exPdfSeq:['RU, затем KZ','RU, кейін KZ'], cpRu:['Копировать RU','RU көшіру'], cpKz:['Копировать KZ','KZ көшіру'], cpSeq:['Копировать RU, затем KZ','RU, кейін KZ көшіру'],
+ kzTip:['Таблица — для удобной проверки на сайте. Для портала закупок выбирайте «RU, затем KZ» или «Копировать» — текст вставится без таблицы.','Кесте — сайтта ыңғайлы тексеру үшін. Сатып алу порталы үшін «RU, кейін KZ» немесе «Көшіру» таңдаңыз — мәтін кестесіз қойылады.'],
+ lgWord:['пословно по глоссарию (демо) — проверить','глоссарий бойынша сөзбе-сөз (демо) — тексеру'],
+ needReq:['Опишите, что нужно закупить, или загрузите паспорт оборудования.','Не сатып алу керектігін сипаттаңыз немесе жабдық төлқұжатын жүктеңіз.']
+};
+const t=k=>(I18N[k]||[k,k])[state.lang==='kz'?1:0];
+
+/* ================= Справочники (демо) ================= */
+const SECT=[
+ {n:1,k:/наименовани/i,ru:'Наименование закупаемого товара и код ЕНС ТРУ',kz:'Сатып алынатын тауардың атауы және ТЖҚ БНА коды'},
+ {n:2,k:/количеств/i,ru:'Количество, единица измерения',kz:'Саны, өлшем бірлігі'},
+ {n:3,k:/характеристик/i,ru:'Технические и функциональные характеристики',kz:'Техникалық және функционалдық сипаттамалар'},
+ {n:4,k:/качеств|стандарт/i,ru:'Требования к качеству, ссылки на стандарты',kz:'Сапаға қойылатын талаптар, стандарттарға сілтемелер'},
+ {n:5,k:/унификац/i,ru:'Обоснование унификации',kz:'Біріздендіру негіздемесі'},
+ {n:6,k:/упаковк|маркировк|транспортир/i,ru:'Требования к упаковке, маркировке, транспортировке',kz:'Қаптамаға, таңбалауға, тасымалдауға қойылатын талаптар'},
+ {n:7,k:/гаранти/i,ru:'Гарантийные обязательства',kz:'Кепілдік міндеттемелер'},
+ {n:8,k:/срок|место поставк/i,ru:'Сроки и место поставки',kz:'Жеткізу мерзімі мен орны'},
+ {n:9,k:/сопроводительн|документац/i,ru:'Требования к сопроводительной документации',kz:'Ілеспе құжаттамаға қойылатын талаптар'}
+];
+const P={ // типовые строки [ru, kz]
+ title:['ТЕХНИЧЕСКАЯ СПЕЦИФИКАЦИЯ','ТЕХНИКАЛЫҚ ЕРЕКШЕЛІК'],
+ ens:['Код ЕНС ТРУ: ________ (подтвердите по справочнику ЕНС ТРУ)','ТЖҚ БНА коды: ________ (ТЖҚ БНА анықтамалығы бойынша растаңыз)'],
+ equivCrit:['Допускается поставка эквивалента. Критерии эквивалентности: совпадение присоединительных и габаритных размеров, характеристики не хуже указанных, совместимость с оборудованием без его доработки.','Баламасын жеткізуге рұқсат етіледі. Баламалылық өлшемшарттары: қосылу және габариттік өлшемдерінің сәйкестігі, сипаттамалары көрсетілгендерден төмен емес, жабдықпен оны пысықтаусыз үйлесімділігі.'],
+ newItem:['Товар должен быть новым, ранее не использованным, изготовленным не ранее 2025 года.','Тауар жаңа, бұрын пайдаланылмаған, 2025 жылдан ерте емес өндірілген болуы тиіс.'],
+ climIn:['Климатическое исполнение — УХЛ4 по ГОСТ 15150-69.','Климаттық орындалуы — ГОСТ 15150-69 бойынша УХЛ4.'],
+ climOut:['Климатическое исполнение — УХЛ1 по ГОСТ 15150-69.','Климаттық орындалуы — ГОСТ 15150-69 бойынша УХЛ1.'],
+ anticor:['Временная противокоррозионная защита — по ГОСТ 9.014-78.','Уақытша коррозияға қарсы қорғау — ГОСТ 9.014-78 бойынша.'],
+ weldSafe:['Требования безопасности — по ГОСТ 12.2.007.8-75.','Қауіпсіздік талаптары — ГОСТ 12.2.007.8-75 бойынша.'],
+ notReq:['Не требуется — допускается поставка эквивалента.','Талап етілмейді — баламасын жеткізуге рұқсат етіледі.'],
+ pack:['Упаковка — заводская, обеспечивающая сохранность товара при транспортировке и хранении.','Қаптама — зауыттық, тасымалдау және сақтау кезінде тауардың сақталуын қамтамасыз ететін.'],
+ mark:['Маркировка — по ГОСТ 14192-96, с указанием наименования, каталожного номера и даты изготовления.','Таңбалау — ГОСТ 14192-96 бойынша, атауы, каталог нөмірі және дайындалған күні көрсетіле отырып.'],
+ warr:['Гарантийный срок — не менее 12 месяцев с даты поставки.','Кепілдік мерзімі — жеткізілген күннен бастап кемінде 12 ай.'],
+ warr2:['Замена товара ненадлежащего качества — за счёт поставщика в течение 10 рабочих дней.','Сапасы тиісті емес тауарды ауыстыру — 10 жұмыс күні ішінде өнім берушінің есебінен.'],
+ placeDef:['Место поставки: центральный склад предприятия.','Жеткізу орны: кәсіпорынның орталық қоймасы.'],
+ docs:['Сертификат или декларация о соответствии ЕАЭС, паспорт качества производителя, накладная.','ЕАЭО сәйкестік сертификаты немесе декларациясы, өндірушінің сапа төлқұжаты, жүкқұжат.'],
+ docsLang:['Документы предоставляются на русском и/или казахском языке.','Құжаттар орыс және/немесе қазақ тілінде ұсынылады.'],
+ docsWeld:['Паспорт и руководство по эксплуатации — по ГОСТ 2.601-2013.','Төлқұжат және пайдалану жөніндегі нұсқаулық — ГОСТ 2.601-2013 бойынша.'],
+ qtyDef:['Количество: ___ шт.',null],
+ nameDef:['Наименование: ___',null],
+ specDef:['— основные параметры: ___ (укажите значения и единицы измерения).',null],
+ unifDef:['Обоснование: оборудование ___ (модель, зав. №) — применение иных материалов влечёт утрату гарантии производителя; совместимость подтверждается паспортом оборудования.',null]
+};
+const DEF={1:[P.nameDef,P.ens],2:[P.qtyDef],3:[P.specDef],4:[P.newItem,P.climIn],5:[P.unifDef],6:[P.pack,P.mark],7:[P.warr,P.warr2],8:[['Срок поставки: в течение 30 календарных дней с даты заключения договора.','Жеткізу мерзімі: шарт жасалған күннен бастап 30 күнтізбелік күн ішінде.'],P.placeDef],9:[P.docs,P.docsLang]};
+
+const CONS={
+ oil:{ru:'Фильтр масляный',kz:'Май сүзгісі',kw:/масл/i,specs:[
+  ['тип: навинчиваемый (spin-on)','түрі: бұралмалы (spin-on)'],
+  ['присоединительная резьба: 3/4"-16 UNF','қосылу бұрандасы: 3/4"-16 UNF'],
+  ['степень фильтрации: не более 25 мкм','сүзу дәрежесі: 25 мкм-ден аспайды'],
+  ['рабочее давление: не менее 20 бар','жұмыс қысымы: кемінде 20 бар'],
+  ['перепускной клапан: давление открытия 2,5 ± 0,2 бар','айналма клапан: ашылу қысымы 2,5 ± 0,2 бар'],
+  ['рабочая температура: от −20 до +120 °C','жұмыс температурасы: −20-дан +120 °C-қа дейін'],
+  ['габаритные размеры (диаметр × высота): 96 × 142 мм ± 2 мм','габариттік өлшемдері (диаметрі × биіктігі): 96 × 142 мм ± 2 мм']]},
+ air:{ru:'Фильтр воздушный',kz:'Ауа сүзгісі',kw:/воздуш/i,specs:[
+  ['тип: картридж с фильтрующим элементом из целлюлозы','түрі: целлюлозадан жасалған сүзгі элементі бар картридж'],
+  ['эффективность очистки: не менее 99,5 % для частиц размером от 3 мкм','тазарту тиімділігі: мөлшері 3 мкм-ден басталатын бөлшектер үшін кемінде 99,5 %'],
+  ['наружный диаметр: 160 ± 2 мм','сыртқы диаметрі: 160 ± 2 мм'],
+  ['внутренний диаметр: 100 ± 2 мм','ішкі диаметрі: 100 ± 2 мм'],
+  ['высота: 330 ± 2 мм','биіктігі: 330 ± 2 мм'],
+  ['рабочая температура: от −40 до +80 °C','жұмыс температурасы: −40-тан +80 °C-қа дейін']]},
+ fuel:{ru:'Фильтр топливный',kz:'Отын сүзгісі',kw:/топлив/i,specs:[
+  ['тип: навинчиваемый','түрі: бұралмалы'],
+  ['присоединительная резьба: M16×1,5','қосылу бұрандасы: M16×1,5'],
+  ['степень фильтрации: не более 10 мкм','сүзу дәрежесі: 10 мкм-ден аспайды'],
+  ['рабочее давление: не менее 7 бар','жұмыс қысымы: кемінде 7 бар'],
+  ['рабочая температура: от −30 до +100 °C','жұмыс температурасы: −30-дан +100 °C-қа дейін'],
+  ['габаритные размеры (диаметр × высота): 93 × 145 мм ± 2 мм','габариттік өлшемдері (диаметрі × биіктігі): 93 × 145 мм ± 2 мм']]},
+ sep:{ru:'Сепаратор масла',kz:'Май сепараторы',kw:/сепарат/i,specs:[
+  ['тип: сепаратор воздушно-масляный, встраиваемый','түрі: ауа-май сепараторы, кіріктірілетін'],
+  ['остаточное содержание масла в воздухе: не более 3 мг/м³','ауадағы майдың қалдық мөлшері: 3 мг/м³-ден аспайды'],
+  ['рабочее давление: не менее 13 бар','жұмыс қысымы: кемінде 13 бар'],
+  ['рабочая температура: от −10 до +120 °C','жұмыс температурасы: −10-нан +120 °C-қа дейін'],
+  ['габаритные размеры (диаметр × высота): 180 × 260 мм ± 2 мм','габариттік өлшемдері (диаметрі × биіктігі): 180 × 260 мм ± 2 мм']]}
+};
+const WELD=[
+ ['тип: инвертор для ручной дуговой сварки (MMA) покрытыми электродами','түрі: қапталған электродтармен қолмен доғалық дәнекерлеуге (MMA) арналған инвертор'],
+ ['напряжение питающей сети: 380 В ± 15 %, 3 фазы, 50 Гц','қоректендіру желісінің кернеуі: 380 В ± 15 %, 3 фаза, 50 Гц'],
+ ['диапазон сварочного тока: от 20 до 315 А','дәнекерлеу тогының ауқымы: 20-дан 315 А-ға дейін'],
+ ['продолжительность включения (ПВ) при максимальном токе: не менее 60 % при +40 °C','максималды токтағы қосылу ұзақтығы (ҚҰ): +40 °C кезінде кемінде 60 %'],
+ ['диаметр применяемых электродов: от 1,6 до 5,0 мм','қолданылатын электродтардың диаметрі: 1,6-дан 5,0 мм-ге дейін'],
+ ['степень защиты корпуса: не ниже IP23','корпустың қорғаныс дәрежесі: IP23-тен төмен емес'],
+ ['масса: не более 25 кг','салмағы: 25 кг-нан аспайды'],
+ ['рабочая температура: от −10 до +40 °C','жұмыс температурасы: −10-нан +40 °C-қа дейін'],
+ ['комплектация: кабель с электрододержателем и кабель с клеммой заземления длиной не менее 3 м каждый','жиынтықтылығы: электрод ұстағышы бар кабель және жерге тұйықтау қысқышы бар кабель, әрқайсысының ұзындығы кемінде 3 м']
+];
+const EQUIP=[
+ {id:'c1',name:'Компрессор винтовой',gen:'компрессора винтового',kzDat:'бұрандалы компрессорына',kzNom:'бұрандалы компрессор',brand:'Atlas Copco',model:'GA 37',serial:'API 123456',inv:'000123',year:'2019',place:'Компрессорная станция цеха №2',
+  cons:[{kind:'oil',cat:'AC-1613-0590',qty:2},{kind:'air',cat:'AC-1613-7407',qty:2},{kind:'sep',cat:'AC-1613-8397',qty:1}]},
+ {id:'g1',name:'Дизель-генераторная установка',gen:'дизель-генераторной установки',kzDat:'дизельді генератор қондырғысына',kzNom:'дизельді генератор қондырғысы',brand:'Cummins',model:'C150 D5',serial:'K12345678',inv:'000457',year:'2020',place:'Энергоучасток, резервная ДГУ',
+  cons:[{kind:'oil',cat:'CU-LF-9009',qty:4},{kind:'fuel',cat:'CU-FF-5052',qty:4},{kind:'air',cat:'CU-AH-1135',qty:2}]}
+];
+const STD_BASE=[
+ {code:'ГОСТ 15150-69',title:'Машины, приборы и другие технические изделия. Исполнения для различных климатических районов',status:'действующий',tags:['*']},
+ {code:'ГОСТ 14192-96',title:'Маркировка грузов',status:'действующий',tags:['*']},
+ {code:'ГОСТ 9.014-78',title:'ЕСЗКС. Временная противокоррозионная защита изделий. Общие требования',status:'действующий',tags:['filter','welding']},
+ {code:'ГОСТ 2.601-2013',title:'ЕСКД. Эксплуатационные документы',status:'действующий',tags:['welding']},
+ {code:'ГОСТ 2.601-2006',title:'ЕСКД. Эксплуатационные документы',status:'заменён',repl:'ГОСТ 2.601-2013',tags:[]},
+ {code:'ГОСТ 12.2.007.8-75',title:'ССБТ. Устройства электросварочные и для плазменной обработки. Требования безопасности',status:'действующий',tags:['welding'],spec:true},
+ {code:'ГОСТ 12.4.011-89',title:'ССБТ. Средства защиты работающих. Общие требования и классификация',status:'действующий',tags:['siz'],spec:true},
+ {code:'ГОСТ 17479.1-2015',title:'Масла моторные. Классификация и обозначение',status:'действующий',tags:['oil'],spec:true},
+ {code:'ГОСТ 305-2013',title:'Топливо дизельное. Технические условия',status:'действующий',tags:['fuel'],spec:true},
+ {code:'ГОСТ 305-82',title:'Топливо дизельное. Технические условия',status:'заменён',repl:'ГОСТ 305-2013',tags:[]}
+];
+const BRANDS=['Atlas Copco','Mann','Bosch','Donaldson','Fleetguard','Caterpillar','Komatsu','Siemens','ABB','SKF','Shell','Mobil','Kemppi','Lincoln Electric','ESAB','Fubag','Makita','Volvo','Cummins','Parker','Hengst','Mahle','Grundfos'];
+const ENTERPRISES=['Демо-завод №1 (металлургия)','Демо-НПЗ (нефтегаз)','Демо-ТЭЦ (энергетика)','Демо-рудник (горное дело)','Демо-депо (ж/д транспорт)'];
+const INDUSTRIES=['Металлургия','Нефтегаз','Энергетика','Горное дело','Ж/д транспорт','Машиностроение','Общая техника'];
+const CRIT=[{id:'complete',w:25},{id:'procurement',w:25},{id:'standards',w:15},{id:'clarity',w:15},{id:'measure',w:10},{id:'structure',w:10}];
+
+/* Глоссарий рус → каз (фрагмент, для фолбэка по терминам) */
+const GLOSS=[
+ ['техническая спецификация','техникалық ерекшелік'],['единица измерения','өлшем бірлігі'],['фильтр масляный','май сүзгісі'],['фильтр воздушный','ауа сүзгісі'],['фильтр топливный','отын сүзгісі'],
+ ['или эквивалент','немесе баламасы'],['не менее','кемінде'],['в течение','ішінде'],['техническое обслуживание','техникалық қызмет көрсету'],
+ ['наименование','атауы'],['количество','саны'],['или','немесе'],['и','және'],['шт','дана'],
+ ['фильтр','сүзгі',1],['компрессор','компрессор',1],['насос','сорғы',1],['двигател','қозғалтқыш',1],['генератор','генератор',1],['подшипник','мойынтірек',1],['уплотнени','тығыздағыш',1],
+ ['масл','май',1],['топлив','отын',1],['воздух','ауа',1],['давлени','қысым',1],['температур','температура',1],['напряжени','кернеу',1],['мощност','қуат',1],['масс','салмақ',1],
+ ['размер','өлшем',1],['диаметр','диаметр',1],['высот','биіктік',1],['длин','ұзындық',1],['резьб','бұранда',1],['сварочн','дәнекерлеу',1],['электрод','электрод',1],['кабел','кабель',1],
+ ['гаранти','кепілдік',1],['поставщик','өнім беруші',1],['поставк','жеткізу',1],['заказчик','тапсырыс беруші',1],['договор','шарт',1],['срок','мерзім',1],['склад','қойма',1],
+ ['упаковк','қаптама',1],['маркировк','таңбалау',1],['сертификат','сертификат',1],['паспорт','төлқұжат',1],['документ','құжат',1],['производител','өндіруші',1],['оборудовани','жабдық',1],
+ ['товар','тауар',1],['эквивалент','балама',1],['месяц','ай',1],['календарн','күнтізбелік',1],['качеств','сапа',1],['требовани','талап',1],['соответстви','сәйкестік',1],['стандарт','стандарт',1],
+ ['инвертор','инвертор',1],['перчатк','қолғап',1],['спецодежд','арнайы киім',1],['каск','дулыға',1],['характеристик','сипаттама',1],['функциональн','функционалдық',1],['ремонт','жөндеу',1],['трубопровод','құбыржол',1],['клапан','клапан',1],['ремн','белдік',1]
+].map(([ru,kz,stem])=>({ru,kz,stem:!!stem})).sort((a,b)=>b.ru.length-a.ru.length);
+const GLOSS_KZ=[...new Set(GLOSS.map(g=>g.kz).filter(k=>k.length>=4))].sort((a,b)=>b.length-a.length);
+
+const KNOWN={};
+SECT.forEach(s=>{KNOWN[`${s.n}. ${s.ru}`]=`${s.n}. ${s.kz}`});
+const regPair=p=>{if(p&&p[1]) KNOWN[p[0]]=p[1]};
+Object.values(P).forEach(regPair); Object.values(DEF).flat().forEach(regPair);
+
+/* ================= Состояние ================= */
+const state={
+  lang:store.get('ts-lang','ru'), text:'', mode:'equiv', conf:false, files:[], equip:null,
+  issues:[], scores:{}, total:null, stds:null, analyzedText:null, filter:null,
+  docId:null, kzMap:{}, kz:null, req:'', reqStatus:null,
+  undo:[], redo:[], lastSnap:'',
+  weights:store.get('ts-weights',Object.fromEntries(CRIT.map(c=>[c.id,c.w]))),
+  profile:store.get('ts-profile',{name:'Инициатор',role:'init',ent:ENTERPRISES[0],ind:'Машиностроение'})
+};
+
+/* ================= Редактор ================= */
+const ed=$('#editor');
+function lineClass(ln){
+  if(/^\s*ТЕХНИЧЕСКАЯ СПЕЦИФИКАЦИЯ/i.test(ln)) return 'ln-title';
+  if(/^\s*\d{1,2}\.\s+[^\d\s]/.test(ln)) return 'ln-h';
+  if(/^\s*\d+\.\d+\.?\s/.test(ln)) return 'ln-sub';
+  return '';
+}
+function caretOffset(){
+  const sel=getSelection(); if(!sel.rangeCount||!ed.contains(sel.anchorNode)) return null;
+  const r=sel.getRangeAt(0), pre=document.createRange(); pre.selectNodeContents(ed); pre.setEnd(r.endContainer,r.endOffset);
+  return pre.toString().length;
+}
+function setCaret(off){
+  const w=document.createTreeWalker(ed,NodeFilter.SHOW_TEXT); let n,acc=0,last=null;
+  while((n=w.nextNode())){ last=n; if(acc+n.length>=off){ const r=document.createRange(); r.setStart(n,off-acc); r.collapse(true); const s=getSelection(); s.removeAllRanges(); s.addRange(r); return; } acc+=n.length; }
+  if(last){ const r=document.createRange(); r.setStart(last,last.length); r.collapse(true); const s=getSelection(); s.removeAllRanges(); s.addRange(r); }
+}
+function render(keepCaret){
+  const off=keepCaret&&document.activeElement===ed?caretOffset():null;
+  const text=state.text;
+  const fresh=state.analyzedText===text;
+  const marks=fresh?state.issues.filter(i=>i.pos!=null&&i.len>0).map(i=>({s:i.pos,e:i.pos+i.len,sev:i.sev,id:i.id})).sort((a,b)=>a.s-b.s||b.e-a.e):[];
+  const ms=[]; let last=-1; for(const m of marks){ if(m.s>=last){ ms.push(m); last=m.e; } }
+  const lines=text.split('\n'); let html='', o=0;
+  lines.forEach((ln,idx)=>{
+    const ls=o, le=o+ln.length; let inner='', p=ls;
+    for(const m of ms){ if(m.e<=ls||m.s>=le) continue; const s=Math.max(m.s,ls), e=Math.min(m.e,le);
+      if(s>p) inner+=esc(text.slice(p,s)); inner+=`<mark class="m-${m.sev}" data-id="${m.id}">${esc(text.slice(s,e))}</mark>`; p=e; }
+    if(p<le) inner+=esc(text.slice(p,le));
+    const cls=lineClass(ln); html+=cls&&ln?`<span class="${cls}">${inner}</span>`:inner;
+    if(idx<lines.length-1) html+='\n'; o=le+1;
+  });
+  ed.innerHTML=html+'<br>';
+  if(off!=null) setCaret(off);
+  $('#edPh').hidden=!!text;
+}
+function commitSnap(){ if(state.text!==state.lastSnap){ state.undo.push(state.lastSnap); if(state.undo.length>100) state.undo.shift(); state.lastSnap=state.text; state.redo=[]; } updUndo(); }
+function updUndo(){ $('#btnUndo').disabled=!state.undo.length; $('#btnRedo').disabled=!state.redo.length; }
+function setText(txt,{snap=true}={}){ if(snap) commitSnap(); state.text=txt; if(snap) commitSnap(); render(false); check(); autosave(); }
+function undo(){ commitSnap(); if(!state.undo.length) return; state.redo.push(state.text); state.text=state.undo.pop(); state.lastSnap=state.text; render(false); check(); autosave(); updUndo(); }
+function redo(){ if(!state.redo.length) return; state.undo.push(state.text); state.text=state.redo.pop(); state.lastSnap=state.text; render(false); check(); autosave(); updUndo(); }
+function insertAtCaret(str){
+  const sel=getSelection(); if(!sel.rangeCount) return;
+  const r=sel.getRangeAt(0), pre=document.createRange(); pre.selectNodeContents(ed); pre.setEnd(r.startContainer,r.startOffset);
+  const s=pre.toString().length, len=r.toString().length, cur=ed.textContent;
+  state.text=cur.slice(0,s)+str+cur.slice(s+len);
+  render(false); setCaret(s+str.length); onEdited();
+}
+let tCheck=null,tSave=null,tSnap=null;
+function onEdited(){
+  $('#edPh').hidden=!!state.text;
+  setStatus(t('pending'));
+  clearTimeout(tCheck); tCheck=setTimeout(check,3000);
+  clearTimeout(tSave); tSave=setTimeout(autosave,1000);
+  clearTimeout(tSnap); tSnap=setTimeout(commitSnap,700);
+}
+ed.addEventListener('input',()=>{ state.text=ed.textContent; onEdited(); });
+ed.addEventListener('keydown',e=>{
+  const k=e.key.toLowerCase();
+  if(e.key==='Enter'){ e.preventDefault(); insertAtCaret('\n'); }
+  else if((e.ctrlKey||e.metaKey)&&k==='z'){ e.preventDefault(); e.shiftKey?redo():undo(); }
+  else if((e.ctrlKey||e.metaKey)&&k==='y'){ e.preventDefault(); redo(); }
+  else if(e.key==='Tab'){ e.preventDefault(); insertAtCaret('\t'); }
+});
+ed.addEventListener('paste',e=>{ e.preventDefault(); insertAtCaret((e.clipboardData.getData('text/plain')||'').replace(/\r\n?/g,'\n')); });
+ed.addEventListener('drop',e=>e.preventDefault());
+ed.addEventListener('click',e=>{ const m=e.target.closest('mark'); if(m) focusIssue(m.dataset.id); });
+
+/* ================= Разбор и проверка ================= */
+function parseSections(text){
+  const res={}; const lines=text.split('\n'); let o=0; const heads=[];
+  for(const ln of lines){ const m=/^\s*(\d{1,2})\.\s+([^\d\s].*)$/.exec(ln);
+    if(m){ const s=SECT.find(s=>!res[s.n]&&s.k.test(m[2])); if(s){ res[s.n]={n:s.n,hs:o,he:o+ln.length}; heads.push(res[s.n]); } }
+    o+=ln.length+1; }
+  heads.forEach((h,i)=>{ h.cs=Math.min(h.he+1,text.length); h.ce=i<heads.length-1?heads[i+1].hs:text.length; h.content=text.slice(h.cs,h.ce); });
+  return res;
+}
+const reEsc=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+const BRAND_RE=new RegExp(`(?:(?:марки|фирмы|производства|бренда)\\s+)?(?<![A-Za-z])(?:${BRANDS.map(reEsc).join('|')})(?![A-Za-z])`,'gi');
+const STD_RE=/(ГОСТ\s+Р\s+|ГОСТ\s+IEC\s+|ГОСТ\s+ISO\s+|ГОСТ\s+|СТ\s+РК\s+)(\d[\d.]*[-–]\d{2,4})/g;
+const UNIT_RE=/\d\s*(мм|см|мкм|м\b|м$|км|бар|МПа|кПа|Па|°\s?[CС]|℃|кВ|В\b|В$|А\b|А$|кВт|Вт|кг|мг|г\b|т\b|л\b|мл|ч\b|мин|с\b|%|Гц|об\/мин|шт|дюйм|лет|год|мес|сут|дн|м³|м3|dB|дБ)|\d\s*["”]|IP\s?\d|UNF|[MМ]\d|×/i;
+const VAGUE=[
+ [/высок(?:ого|ое|ий|ая|ие|ой|ую|им)\s+качеств[а-яё]*/gi,'соответствующий требованиям нормативной документации и подтверждённый сертификатом соответствия'],
+ [/(?<![а-яё])(?:надёжн|надежн)[а-яё]*/gi,'с гарантийной наработкой не менее ___ ч'],
+ [/(?<![а-яё])современн[а-яё]*/gi,'изготовленный не ранее 2025 года'],
+ [/(?<![а-яё])качественн[а-яё]*/gi,'соответствующим требованиям стандартов'],
+ [/(?<![а-яё])достаточн[а-яё]*/gi,'не менее ___ (укажите значение)'],
+ [/(?<![а-яё])оптимальн[а-яё]*/gi,'указанный в паспорте оборудования'],
+ [/(?<![а-яё])долговечн[а-яё]*/gi,'со сроком службы не менее ___ лет'],
+ [/,?\s*и т\.\s?[пд]\./gi,''],
+ [/по возможности\s*/gi,'']
+];
+const PARAM_RE=/давлени|температур|мощност|напряжени|масс|размер|ток|объ[её]м|производительност|длин|ширин|высот|диаметр/i;
+function detectTags(text){
+  const s=new Set(['*']);
+  if(/фильтр/i.test(text)) s.add('filter');
+  if(/свароч/i.test(text)) s.add('welding');
+  if(/масло моторн|масла моторн|моторное масло/i.test(text)) s.add('oil');
+  if(/дизельное топливо|топливо дизельное/i.test(text)) s.add('fuel');
+  if(/(?<![а-яё])СИЗ|перчат|спецодежд|каск|респиратор/i.test(text)) s.add('siz');
+  return s;
+}
+function detectType(text){ if(/свароч/i.test(text)) return 'welding'; if(/фильтр|сепаратор/i.test(text)) return 'filter'; return 'generic'; }
+const COMPLETE={
+ filter:[[/резьб/i,'присоединительная резьба: ___'],[/фильтрац|очистк/i,'степень фильтрации: не более ___ мкм'],[/давлен/i,'рабочее давление: не менее ___ бар'],[/температур/i,'рабочая температура: от ___ до ___ °C'],[/диаметр|высот|габарит/i,'габаритные размеры (диаметр × высота): ___ × ___ мм']],
+ welding:[[/напряжени/i,'напряжение питающей сети: ___ В'],[/сварочного тока|диапазон.*тока/i,'диапазон сварочного тока: от ___ до ___ А'],[/(?<![а-яё])ПВ|продолжительность включения/i,'продолжительность включения (ПВ): не менее ___ %'],[/IP\s?\d|степень защиты/i,'степень защиты корпуса: не ниже IP___'],[/масса/i,'масса: не более ___ кг']],
+ generic:[[/температур|климатическ/i,'условия эксплуатации: температура от ___ до ___ °C'],[/масс|размер|габарит|вес/i,'габаритные размеры / масса: ___']]
+};
+
+function analyze(text,mode){
+  const issues=[]; let iid=0;
+  const add=(crit,sev,problem,quote,suggestion,fix,pos)=>{ let p=pos; if(p==null&&quote){ p=text.indexOf(quote); }
+    issues.push({id:'i'+(iid++),crit,sev,problem,quote:quote||null,suggestion:suggestion||null,fix:fix||null,pos:p!=null&&p>=0?p:null,len:quote?quote.length:0}); };
+  const sec=parseSections(text);
+  const lineAt=i=>{ const s=text.lastIndexOf('\n',i-1)+1; let e=text.indexOf('\n',i); if(e<0)e=text.length; return {s,e,str:text.slice(s,e)}; };
+  const inSec=(n,i)=>sec[n]&&i>=sec[n].hs&&i<sec[n].ce;
+  const type=detectType(text);
+  const s3=sec[3]?sec[3].content:text;
+
+  // 1. Полнота
+  const req=COMPLETE[type]; let found=0;
+  for(const [re,tpl] of req){ if(re.test(s3)) found++; else add('complete','warn',`Не указан существенный параметр: «${tpl.split(':')[0]}»`,null,`— ${tpl};`,{t:'append',n:3,line:`— ${tpl};`}); }
+  let total=req.length;
+  if(type==='generic'){ total++; const num=s3.split('\n').filter(l=>/^\s*[—\-•]/.test(l)&&/\d/.test(l)).length; if(num>=4) found++; else add('complete','crit',`Мало измеримых характеристик (${num} из рекомендуемых 4+). Опишите ключевые параметры товара.`,null,'— параметр: значение, единица измерения, допуск;',{t:'append',n:3,line:'— параметр: ___ (значение, единица измерения);'}); }
+  const sComplete=Math.round(100*found/total);
+
+  // 2. Порядок закупок
+  let pc=0,pw=0;
+  if(mode==='equiv'){
+    let m; BRAND_RE.lastIndex=0;
+    while((m=BRAND_RE.exec(text))){ const L=lineAt(m.index); const before=text.slice(Math.max(L.s,m.index-45),m.index);
+      if(/или эквивалент/i.test(L.str)||/для\s|совместим|к оборудованию/i.test(before)||inSec(5,m.index)) continue;
+      pc++; add('procurement','crit','Указан товарный знак без «или эквивалент» и без обоснования унификации',m[0],`${m[0]} или эквивалент (или замените на функциональные характеристики)`,{t:'rep',to:m[0]+' или эквивалент'},m.index); }
+    const RR=/(?:(?:только|исключительно)\s+(?:производства|марки)\s+)|(?<![а-яё])оригинальн(?:ый|ые|ая|ое|ых|ого|ым)\s+/gi;
+    while((m=RR.exec(text))){ if(inSec(5,m.index)) continue; pc++; add('procurement','crit','Требование ограничивает конкуренцию: в режиме «Допускается эквивалент» нельзя требовать оригинал',m[0].trim(),'Удалить ограничивающую формулировку',{t:'rep',to:''},m.index); }
+    if(!/критери\S*\s+эквивалентност/i.test(text)){ pw++; add('procurement','warn','Не указаны критерии эквивалентности — закупщик не сможет оценить предложенные аналоги',null,P.equivCrit[0],{t:'append',n:3,line:P.equivCrit[0]}); }
+  } else {
+    const s5=sec[5]; const c5=s5?s5.content.trim():'';
+    if(!s5||c5.length<80||/не требуется|___/i.test(c5)){ pc++; add('procurement','crit','Режим «Унификация» требует обоснования: ссылка на паспорт, модель, серийный номер, требования производителя по гарантии',s5&&c5?c5.split('\n')[0]:null,'Сформировать обоснование унификации по данным оборудования',s5?{t:'fill',n:5,lines:unifLines()}:{t:'ins',n:5,lines:unifLines()},s5&&c5?s5.cs+s5.content.indexOf(c5.split('\n')[0]):null); }
+  }
+  const sProc=Math.max(0,100-35*pc-12*pw);
+
+  // 3. Стандарты
+  const inText=[]; let sc=0,sw=0,m2; STD_RE.lastIndex=0;
+  while((m2=STD_RE.exec(text))){ const code=(m2[1].replace(/\s+/g,' ')+m2[2].replace('–','-')).trim(); const e=STD_BASE.find(b=>b.code===code);
+    inText.push({code,e});
+    if(!e){ sw++; add('standards','warn','Стандарт не найден в локальной базе — проверьте номер и статус',m2[0],null,null,m2.index); }
+    else if(e.status!=='действующий'){ sc++; add('standards','crit',`Стандарт ${e.status}${e.repl?' на '+e.repl:''}`,m2[0],e.repl?`по ${e.repl}`:null,e.repl?{t:'rep',to:e.repl}:null,m2.index); } }
+  if(!inText.length){ sc++; add('standards','crit','Нет ссылок на применимые ГОСТ / СТ РК — добавьте из списка «Рекомендуемые стандарты»',null,null,null); }
+  const sStd=inText.length?Math.max(0,100-30*sc-15*sw):20;
+  const tags=detectTags(text), codes=new Set(inText.map(x=>x.code));
+  const suggest=STD_BASE.filter(b=>b.status==='действующий'&&b.tags.some(g=>tags.has(g))&&!codes.has(b.code));
+  const specFound=STD_BASE.some(b=>b.spec&&b.status==='действующий'&&b.tags.some(g=>tags.has(g)));
+
+  // 4. Однозначность
+  let vc=0;
+  for(const [re,sug] of VAGUE){ re.lastIndex=0; let m; while((m=re.exec(text))){ if(!m[0].trim()) continue; vc++;
+    add('clarity','warn','Размытая формулировка — не проверяется при приёмке товара',m[0].trim(),sug||'Удалить и перечислить требования полностью',{t:'rep',to:sug},m.index+m[0].indexOf(m[0].trim())); } }
+  const sClar=Math.max(0,100-15*vc);
+
+  // 5. Измеримость
+  let mc=0;
+  if(sec[3]){ let o=sec[3].cs;
+    for(const ln of sec[3].content.split('\n')){
+      if(/^\s*[—\-•]/.test(ln)){
+        const ci=ln.indexOf(':'); const label=ci>=0?ln.slice(0,ci):ln; const val=ci>=0?ln.slice(ci+1):ln;
+        const ui=ln.indexOf('___');
+        if(ui>=0){ mc++; add('measure','warn','Не заполнено значение параметра','___','Укажите числовое значение с единицей измерения',null,o+ui); }
+        else if(/\d/.test(val)&&!UNIT_RE.test(val)){ mc++; const q=val.trim().replace(/[;.]$/,''); add('measure','warn','Число без единицы измерения или допуска',q,`${q} (мм / бар / °C / В … ± допуск)`,null,o+ln.indexOf(q)); }
+        else if(!/\d/.test(val)&&PARAM_RE.test(label)){ mc++; const q=ln.trim().replace(/[;.]$/,''); add('measure','warn','Параметр без числового значения',q,'Укажите значение, единицу измерения и допуск',null,o+ln.indexOf(q)); }
+      }
+      o+=ln.length+1; } }
+  const sMeas=Math.max(0,100-12*mc);
+
+  // 6. Структура
+  let stc=0,stw=0;
+  for(const s of SECT){ if(s.n===5&&mode==='equiv') continue; if(s.n===5&&mode==='unif'&&!sec[5]) continue; // учтено в «Порядке закупок»
+    if(!sec[s.n]){ stc++; add('structure','crit',`Отсутствует обязательный раздел «${s.n}. ${s.ru}»`,null,'Добавить раздел с типовым содержанием',{t:'ins',n:s.n,lines:DEF[s.n].map(p=>p[0])}); }
+    else if(!sec[s.n].content.trim()){ stw++; const h=sec[s.n]; add('structure','warn',`Раздел «${s.ru}» не заполнен`,text.slice(h.hs,h.he),'Заполнить типовым содержанием',{t:'fill',n:s.n,lines:DEF[s.n].map(p=>p[0])},h.hs); } }
+  if(sec[1]){ if(!/ЕНС ТРУ/i.test(sec[1].content)){ stw++; add('structure','warn','Не указан код ЕНС ТРУ',null,P.ens[0],{t:'append',n:1,line:P.ens[0]}); }
+    else { const ui=sec[1].content.search(/_{3,}/); if(ui>=0&&/ЕНС ТРУ[^\n]*_{3,}/i.test(sec[1].content)){ stw++; const q=sec[1].content.slice(ui).match(/_+/)[0]; add('structure','warn','Код ЕНС ТРУ не подтверждён — выберите код в справочнике ЕНС ТРУ / 1С',q,null,null,sec[1].cs+ui); } } }
+  const sStruct=Math.max(0,100-18*stc-8*stw);
+
+  const scores={complete:sComplete,procurement:sProc,standards:sStd,clarity:sClar,measure:sMeas,structure:sStruct};
+  const W=state.weights; const sw2=CRIT.reduce((a,c)=>a+(+W[c.id]||0),0)||1;
+  const totalScore=Math.round(CRIT.reduce((a,c)=>a+scores[c.id]*(+W[c.id]||0),0)/sw2);
+  return {issues,scores,total:totalScore,stds:{inText,suggest,notFound:!specFound&&tags.size>0}};
+}
+function check(){
+  if(!state.text.trim()){ state.issues=[]; state.total=null; state.analyzedText=state.text; render(true); renderScore(); setStatus(''); return; }
+  const r=analyze(state.text,state.mode);
+  Object.assign(state,{issues:r.issues,scores:r.scores,total:r.total,stds:r.stds,analyzedText:state.text});
+  clearTimeout(tCheck); render(true); renderScore(); setStatus(`${t('checked')} · ${now()}`); autosave();
+}
+
+/* ================= Исправления ================= */
+function unifLines(){
+  const e=state.equip;
+  if(!e) return [P.unifDef[0]];
+  const ru=`Поставка оригинальных расходных материалов производителя ${e.brand} обусловлена требованиями паспорта оборудования: ${lowerFirst(e.name)} ${e.brand} ${e.model} (зав. № ${e.serial}, ${e.year} г. в.). Применение неоригинальных расходных материалов влечёт утрату гарантии производителя и не обеспечивает совместимость с установленным оборудованием. Позиции указаны по каталогу производителя (паспорт, раздел «Техническое обслуживание»).`;
+  const kz=`${e.brand} өндірушісінің түпнұсқа шығыс материалдарын жеткізу жабдық төлқұжатының талаптарымен негізделген: ${e.brand} ${e.model} ${e.kzNom||''} (зауыттық № ${e.serial}, ${e.year} ж. шыққан). Түпнұсқа емес шығыс материалдарын қолдану өндірушінің кепілдігін жоғалтуға әкеледі және орнатылған жабдықпен үйлесімділікті қамтамасыз етпейді. Позициялар өндірушінің каталогы бойынша көрсетілген (төлқұжат, «Техникалық қызмет көрсету» бөлімі).`.replace(/\s+\(/,' (');
+  state.kzMap[ru]=kz; return [ru];
+}
+function txAppend(text,n,line){
+  let sec=parseSections(text);
+  if(!sec[n]){ text=txInsert(text,n,[]); sec=parseSections(text); }
+  const s=sec[n], trimmed=s.content.replace(/\s+$/,'');
+  if(!trimmed.length) return text.slice(0,s.cs)+line+'\n'+(s.ce===text.length?'':'\n')+text.slice(s.ce).replace(/^\n+/,'');
+  const at=s.cs+trimmed.length; return text.slice(0,at)+'\n'+line+text.slice(at);
+}
+function txInsert(text,n,lines){
+  const sec=parseSections(text); const head=`${n}. ${SECT[n-1].ru}`;
+  const next=Object.values(sec).filter(s=>s.n>n).sort((a,b)=>a.n-b.n)[0];
+  const block=[head,...lines].join('\n');
+  if(next) return text.slice(0,next.hs)+block+'\n\n'+text.slice(next.hs);
+  return text.replace(/\s*$/,'')+'\n\n'+block+'\n';
+}
+function txFill(text,n,lines){
+  const s=parseSections(text)[n]; if(!s) return txInsert(text,n,lines);
+  const tail=s.ce===text.length?'\n':'\n\n';
+  return text.slice(0,s.cs)+lines.join('\n')+tail+text.slice(s.ce);
+}
+function applyFix(id){
+  const is=state.issues.find(i=>i.id===id); if(!is||!is.fix) return;
+  if(state.analyzedText!==state.text){ check(); toast('Текст изменился — замечания обновлены, нажмите «Применить» ещё раз'); return; }
+  let tx=state.text; const f=is.fix;
+  if(f.t==='rep'){ if(tx.substr(is.pos,is.len)!==is.quote){ check(); return; }
+    tx=tx.slice(0,is.pos)+f.to+tx.slice(is.pos+is.len);
+    const L0=tx.lastIndexOf('\n',is.pos-1)+1; let L1=tx.indexOf('\n',is.pos); if(L1<0)L1=tx.length;
+    tx=tx.slice(0,L0)+tx.slice(L0,L1).replace(/ {2,}/g,' ').replace(/ ([,;.])/g,'$1')+tx.slice(L1); }
+  else if(f.t==='append') tx=txAppend(tx,f.n,f.line);
+  else if(f.t==='ins') tx=txInsert(tx,f.n,f.lines);
+  else if(f.t==='fill') tx=txFill(tx,f.n,f.lines);
+  const before=state.total; setText(tx);
+  toast(`Исправление применено · ${before}% → ${state.total}%`);
+}
+function addStd(code){
+  const e=STD_BASE.find(b=>b.code===code); const ru=`Соответствие требованиям ${code} («${e.title}»).`;
+  state.kzMap[ru]=`${code} («${e.title}») талаптарына сәйкестік.`;
+  setText(txAppend(state.text,4,ru)); toast(`${code} добавлен в раздел 4`);
+}
+
+/* ================= Панель оценки ================= */
+const zone=v=>v<60?{cls:'red',icon:'✕',key:'zRed',col:'var(--red)'}:v<85?{cls:'yel',icon:'!',key:'zYel',col:'#C3921E'}:{cls:'green',icon:'✓',key:'zGreen',col:'var(--green)'};
+function renderScore(){
+  const C=314.16, fg=$('#gFg');
+  if(state.total==null){
+    fg.setAttribute('stroke-dasharray',`0 ${C}`); $('#gPct').textContent='—'; $('#gZone').textContent=t('noText'); $('#gTime').textContent='';
+    $('#critList').innerHTML=CRIT.map(c=>`<div class="crow" style="cursor:default"><span class="cname">${t('c_'+c.id)} <small>${state.weights[c.id]}%</small></span><span class="cbar"></span><span class="cpct">—</span><span></span></div>`).join('');
+    $('#issues').innerHTML=`<p class="muted" style="font-size:13.5px">${t('noTextHint')}</p>`; $('#issCount').textContent=''; $('#btnAllIss').hidden=true;
+    $('#stds').innerHTML=`<div class="note">${t('stdBase')}</div>`; $('#miniScore').textContent=t('noText'); return;
+  }
+  const z=zone(state.total);
+  fg.setAttribute('stroke-dasharray',`${C*state.total/100} ${C}`); fg.style.stroke=z.col;
+  $('#gPct').textContent=state.total+'%';
+  $('#gZone').innerHTML=`<span class="zi ${z.cls}" aria-hidden="true">${z.icon}</span>${t(z.key)}`;
+  const nc=state.issues.filter(i=>i.sev==='crit').length;
+  $('#gTime').textContent=`${t('checked')} ${now()} · ${state.issues.length} ${state.lang==='kz'?'ескерту':'замеч.'}${nc?` (${nc} ${state.lang==='kz'?'маңызды':'критичн.'})`:''}`;
+  $('#miniScore').innerHTML=`<span class="zi ${z.cls}">${z.icon}</span>${state.total}% · ${t(z.key)}`;
+  $('#critList').innerHTML=CRIT.map(c=>{ const s=state.scores[c.id], n=state.issues.filter(i=>i.crit===c.id).length, zz=zone(s);
+    return `<button type="button" class="crow ${state.filter===c.id?'on':''}" data-c="${c.id}" aria-pressed="${state.filter===c.id}"><span class="cname">${t('c_'+c.id)} <small>${state.weights[c.id]}%</small></span><span class="cbar"><i class="${zz.cls}" style="width:${Math.max(s,2)}%"></i></span><span class="cpct">${s}%</span><span class="cn ${n?'':'ok'}">${n||'✓'}</span></button>`; }).join('');
+  let list=state.issues.slice(); if(state.filter) list=list.filter(i=>i.crit===state.filter);
+  list.sort((a,b)=>(a.sev===b.sev?0:a.sev==='crit'?-1:1)||((a.pos??1e9)-(b.pos??1e9)));
+  $('#issCount').textContent=`· ${list.length}${state.filter?' / '+state.issues.length:''}`; $('#btnAllIss').hidden=!state.filter;
+  $('#issues').innerHTML=list.length?list.map(i=>`<div class="iss ${i.sev}" id="card-${i.id}">
+    <div class="iss-top"><span class="sev ${i.sev}">${i.sev==='crit'?'✕':'!'} ${t(i.sev==='crit'?'sevCrit':'sevWarn')}</span><span class="icrit">${t('c_'+i.crit)}</span></div>
+    <div class="iprob">${esc(i.problem)}</div>
+    ${i.quote&&i.pos!=null?`<button type="button" class="iquote" data-q="${i.id}" title="${t('show')}">«${esc(i.quote.length>90?i.quote.slice(0,90)+'…':i.quote)}»</button>`:''}
+    ${i.suggestion?`<div class="isug"><span>${t('suggest')}:</span> ${esc(i.suggestion.length>220?i.suggestion.slice(0,220)+'…':i.suggestion)}</div>`:''}
+    ${i.fix?`<div class="iact"><button type="button" class="btn sm primary" data-apply="${i.id}">${t('apply')}</button></div>`:''}
+  </div>`).join(''):`<p class="muted" style="font-size:13.5px">✓ ${t('noIssues')}</p>`;
+  const S=state.stds; let h=`<div class="note">${t('stdBase')}</div>`;
+  if(S.inText.length) h+=`<div style="font-size:12.5px;font-weight:600;color:var(--muted);margin:8px 0 4px">${t('stdInText')}</div>`+S.inText.map(x=>`<div class="std"><b>${esc(x.code)}${x.e?`<span class="stat ${x.e.status==='действующий'?'ok':'bad'}">${x.e.status==='действующий'?'✓':'✕'} ${x.e.status}</span>`:'<span class="stat bad">? нет в базе</span>'}</b><small>${x.e?esc(x.e.title):'Проверьте номер — в базе не найден'}</small></div>`).join('');
+  if(S.suggest.length) h+=`<div style="font-size:12.5px;font-weight:600;color:var(--muted);margin:10px 0 4px">${state.lang==='kz'?'Ұсынылады':'Предлагается'}</div>`+S.suggest.map(b=>`<div class="std"><b>${esc(b.code)}<span class="stat ok">✓ ${b.status}</span></b><small>${esc(b.title)}</small><button type="button" class="btn sm" data-std="${esc(b.code)}">+ ${t('addStd')}</button></div>`).join('');
+  if(S.notFound) h+=`<div class="note" style="background:var(--yel-bg);color:#6E5310">${t('stdNotFound')}</div>`;
+  $('#stds').innerHTML=h;
+}
+function focusIssue(id){
+  if(state.filter){ const is=state.issues.find(i=>i.id===id); if(is&&is.crit!==state.filter){ state.filter=null; renderScore(); } }
+  const c=document.getElementById('card-'+id); if(!c) return;
+  c.scrollIntoView({behavior:'smooth',block:'center'}); c.classList.remove('flash'); void c.offsetWidth; c.classList.add('flash');
+}
+function showInText(id){
+  const m=ed.querySelector(`mark[data-id="${id}"]`); if(!m) return;
+  m.scrollIntoView({behavior:'smooth',block:'center'}); m.classList.remove('flash'); void m.offsetWidth; m.classList.add('flash');
+}
+$('#critList').addEventListener('click',e=>{ const b=e.target.closest('[data-c]'); if(!b) return; state.filter=state.filter===b.dataset.c?null:b.dataset.c; renderScore(); });
+$('#btnAllIss').addEventListener('click',()=>{ state.filter=null; renderScore(); });
+$('#issues').addEventListener('click',e=>{ const a=e.target.closest('[data-apply]'); if(a) return applyFix(a.dataset.apply); const q=e.target.closest('[data-q]'); if(q) showInText(q.dataset.q); });
+$('#stds').addEventListener('click',e=>{ const b=e.target.closest('[data-std]'); if(b) addStd(b.dataset.std); });
+
+/* ================= Генерация ================= */
+function generate(o){
+  const eq=o.equip; const type=eq?'filter':detectType(o.req);
+  const out=[], map={}; const L=(ru,kz)=>{ out.push(ru); if(kz) map[ru]=kz; }; const B=()=>out.push('');
+  const H=n=>L(`${n}. ${SECT[n-1].ru}`,`${n}. ${SECT[n-1].kz}`);
+  const ans=o.ans||{}, days=+ans.days||30, place=(ans.place||'').trim();
+  let items=[];
+  if(type==='filter'){
+    let kinds=eq?eq.cons.filter(c=>c.on!==false).map(c=>c.kind):['oil','air','fuel','sep'];
+    const wanted=kinds.filter(k=>CONS[k].kw.test(o.req)); if(wanted.length) kinds=wanted; else if(!eq) kinds=['oil','air'];
+    if(!kinds.length&&eq) kinds=eq.cons.map(c=>c.kind);
+    items=kinds.map(k=>{ const c=eq?eq.cons.find(x=>x.kind===k):null; return {...CONS[k],qty:c?c.qty:(+ans.qty||2),cat:c?c.cat:null}; });
+  } else if(type==='welding'){
+    items=[{ru:'Сварочный инвертор для ручной дуговой сварки (MMA)',kz:'Қолмен доғалық дәнекерлеуге (MMA) арналған дәнекерлеу инверторы',qty:+ans.qty||1,specs:WELD}];
+  } else {
+    const specs=(ans.params||'').split(/[,;\n]+/).map(s=>s.trim()).filter(Boolean).map(s=>[s,null]);
+    items=[{ru:cap(o.req.replace(/^(нужен|нужна|нужно|нужны|требуется|закупить)\s+/i,'').replace(/[.\s]+$/,'')),kz:null,qty:+ans.qty||1,specs}];
+  }
+  L(...P.title); B(); H(1);
+  const join=(a,w)=>a.length>1?a.slice(0,-1).join(', ')+` ${w} `+a[a.length-1]:a[0];
+  let ru1=join(items.map((it,i)=>i?lowerFirst(it.ru):it.ru),'и'), kz1=items.every(i=>i.kz)?join(items.map((it,i)=>i?lowerFirst(it.kz):it.kz),'және'):null;
+  if(eq){ ru1+=` для ${eq.gen} ${eq.brand} ${eq.model} (зав. № ${eq.serial}, инв. № ${eq.inv})`; if(kz1) kz1=`${eq.brand} ${eq.model} ${eq.kzDat||''} арналған ${lowerFirst(kz1)} (зауыттық № ${eq.serial}, түгендеу № ${eq.inv})`; }
+  L(ru1+'.',kz1&&kz1+'.'); L(...P.ens); B();
+  H(2); items.forEach(it=>L(`${it.ru} — ${it.qty} шт.`,it.kz&&`${it.kz} — ${it.qty} дана.`)); B();
+  H(3);
+  items.forEach((it,i)=>{
+    if(items.length>1||it.cat){
+      if(o.mode==='unif'&&it.cat&&eq) L(`3.${i+1}. ${it.ru}, каталожный № ${it.cat} (производитель — ${eq.brand}):`,it.kz&&`3.${i+1}. ${it.kz}, каталог № ${it.cat} (өндіруші — ${eq.brand}):`);
+      else L(`3.${i+1}. ${it.ru}:`,it.kz&&`3.${i+1}. ${it.kz}:`);
+    }
+    const sp=it.specs.length?it.specs:[[P.specDef[0].replace(/^— /,'').replace(/\.$/,''),null]];
+    sp.forEach((s,j)=>{ const end=j===sp.length-1?'.':';'; L(`— ${s[0]}${end}`,s[1]&&`— ${s[1]}${end}`); });
+  });
+  if(ans.extra&&ans.extra.trim()) L(`— дополнительно: ${ans.extra.trim().replace(/[.;]$/,'')}.`);
+  if(o.mode==='equiv') L(...P.equivCrit);
+  B(); H(4); L(...P.newItem); L(...(ans.outdoor==='1'?P.climOut:P.climIn));
+  if(type==='filter') L(...P.anticor); if(type==='welding') L(...P.weldSafe);
+  B(); H(5);
+  if(o.mode==='unif'){ unifLines().forEach(l=>L(l,state.kzMap[l])); } else L(...P.notReq);
+  B(); H(6); L(...P.pack); L(...P.mark);
+  B(); H(7); L(...P.warr); L(...P.warr2);
+  B(); H(8); L(`Срок поставки: в течение ${days} календарных дней с даты заключения договора.`,`Жеткізу мерзімі: шарт жасалған күннен бастап ${days} күнтізбелік күн ішінде.`);
+  if(!place||/^центральный склад предприятия$/i.test(place)) L(...P.placeDef); else L(`Место поставки: ${place.replace(/\.$/,'')}.`);
+  B(); H(9); L(...P.docs); if(type==='welding') L(...P.docsWeld); L(...P.docsLang);
+  return {text:out.join('\n'),map,type};
+}
+function askClarify(req){
+  const type=detectType(req); const dlg=$('#dlgClarify');
+  const q=(id,label,input,hint)=>`<div class="q"><label for="${id}">${label}</label>${input}${hint?`<small>${hint}</small>`:''}</div>`;
+  let h=`<p class="muted" style="margin:0 0 12px;font-size:13.5px">ИИ определил тип товара: <b>${type==='filter'?'фильтры / расходники':type==='welding'?'сварочное оборудование':'прочий товар'}</b>. Ответьте на несколько вопросов — ТС будет точнее.</p>`;
+  h+=q('qQty','1. Сколько нужно (шт.)?',`<input type="number" id="qQty" min="1" value="${type==='filter'?2:1}">`,type==='filter'?'Количество каждого вида фильтра':'');
+  if(type==='generic') h+=q('qParams','2. Какие параметры важны? (через запятую)','<textarea id="qParams" rows="2" placeholder="Напр.: мощность 2 кВт, напряжение 220 В, масса не более 15 кг"></textarea>','Каждый параметр станет строкой в разделе 3 — указывайте единицы измерения');
+  else h+=q('qExtra','2. Особые требования (необязательно)','<input type="text" id="qExtra" placeholder="Напр.: работа от генератора">');
+  h+=q('qOut','3. Где будет эксплуатироваться?','<select id="qOut"><option value="0">В помещении / отапливаемом цеху (УХЛ4)</option><option value="1">На открытом воздухе (УХЛ1)</option></select>');
+  h+=q('qDays','4. Срок поставки, календарных дней','<input type="number" id="qDays" min="1" value="30">');
+  h+=q('qPlace','5. Место поставки','<input type="text" id="qPlace" value="центральный склад предприятия">');
+  $('#clarBody').innerHTML=h;
+  return new Promise(res=>{
+    const onClose=()=>{ dlg.removeEventListener('close',onClose); if(dlg.returnValue!=='ok') return res(null);
+      res({qty:$('#qQty').value,params:$('#qParams')?$('#qParams').value:'',extra:$('#qExtra')?$('#qExtra').value:'',outdoor:$('#qOut').value,days:$('#qDays').value,place:$('#qPlace').value}); };
+    dlg.addEventListener('close',onClose); dlg.returnValue=''; dlg.showModal();
+  });
+}
+async function busy(title,steps){
+  $('#busyTitle').textContent=title; const ul=$('#busySteps'); ul.innerHTML=steps.map(s=>`<li>${esc(s)}</li>`).join(''); $('#busy').hidden=false;
+  const li=[...ul.children];
+  for(let i=0;i<li.length;i++){ li[i].className='on'; await sleep(420+Math.random()*300); li[i].className='done'; }
+  await sleep(150); $('#busy').hidden=true;
+}
+const chanText=()=>state.conf?'локальная модель (контур компании)':'внешний API, обезличивание включено';
+async function onGenerate(){
+  const req=$('#need').value.trim();
+  if(!req&&!state.equip){ toast(t('needReq')); $('#need').focus(); return; }
+  if(!state.equip&&state.text.trim()&&!confirm('Текущий текст в редакторе будет заменён новой ТС. Продолжить?')) return;
+  let ans={};
+  if(!state.equip){ ans=await askClarify(req); if(!ans) return; }
+  const tpl=state.equip||detectType(req)==='filter'?'Запчасти и расходники':detectType(req)==='welding'?'Оборудование':'Товары (общий)';
+  await busy('Формирование ТС',['Позиция в очереди: 1 · канал: '+chanText(),state.equip?'Извлечение данных из паспорта / карточки ОС':'Анализ потребности и ответов',`Генерация по шаблону «${tpl}» (Порядок закупок)`,'Подбор стандартов по локальной базе','Оценка корректности']);
+  const g=generate({req,mode:state.mode,equip:state.equip,ans});
+  newDoc(false); state.req=req; Object.assign(state.kzMap,g.map);
+  state.undo=[]; state.redo=[]; state.lastSnap='';
+  setText(g.text); toast(`ТС сформирована · оценка ${state.total}%`);
+}
+function newDoc(clear=true){
+  state.docId='ts'+Date.now().toString(36); state.kz=null; state.kzMap={}; state.reqStatus=null; state.filter=null; $('#edInfo').hidden=true;
+  if(clear){ state.undo=[]; state.redo=[]; state.lastSnap=''; state.text=''; state.analyzedText=null; render(false); check(); updDocName(); }
+}
+
+/* ================= Пример ТС с ошибками ================= */
+const SAMPLE=`ТЕХНИЧЕСКАЯ СПЕЦИФИКАЦИЯ
+
+1. Наименование закупаемого товара
+Фильтр масляный марки Mann для компрессора.
+
+2. Количество, единица измерения
+Фильтр масляный — 4 шт.
+
+3. Технические и функциональные характеристики
+— фильтр высокого качества, надёжный и современный;
+— присоединительная резьба: 3/4"-16 UNF;
+— рабочее давление: 20;
+— степень фильтрации: ___ мкм;
+— оригинальный фильтр производства Mann.
+
+4. Требования к качеству, ссылки на стандарты
+Товар должен соответствовать ГОСТ 2.601-2006 и быть качественным.
+
+6. Требования к упаковке, маркировке, транспортировке
+Упаковка заводская, и т.п.
+
+8. Сроки и место поставки
+Срок поставки: в течение 30 календарных дней с даты заключения договора.`;
+
+/* ================= Файлы и 1С ================= */
+const ALLOWED=/\.(pdf|docx|xlsx|jpe?g|png|txt)$/i;
+function fmtSize(b){ return b>1048576?(b/1048576).toFixed(1)+' МБ':Math.max(1,Math.round(b/1024))+' КБ'; }
+function renderFiles(){
+  $('#fileList').innerHTML=state.files.map((f,i)=>`<span class="chip" title="${esc(f.name)}"><span class="nm">${esc(f.name)}</span><span class="st ${f.st==='ok'?'ok':''}">${f.st==='ocr'?'<span class="spin"></span> OCR':f.st==='ok'?'✓ '+fmtSize(f.size):'—'}</span><button type="button" data-rm="${i}" aria-label="Удалить файл">×</button></span>`).join('');
+}
+$('#fileList').addEventListener('click',e=>{ const b=e.target.closest('[data-rm]'); if(!b) return; state.files.splice(+b.dataset.rm,1); renderFiles(); if(!state.files.length&&state.equip&&state.equip.src==='ocr'){ state.equip=null; renderExtract(); } });
+async function handleFiles(list){
+  const arr=[...list]; let bad=[];
+  for(const f of arr){
+    if(!ALLOWED.test(f.name)){ bad.push(`${f.name}: формат не поддерживается`); continue; }
+    if(f.size>50*1048576){ bad.push(`${f.name}: больше 50 МБ`); continue; }
+    if(state.files.length>=10){ bad.push('Не более 10 файлов на одну ТС'); break; }
+    const rec={name:f.name,size:f.size,st:'ocr'}; state.files.push(rec); renderFiles();
+    if(/\.(docx|pdf|txt)$/i.test(f.name)){ // если это готовая ТС, а не паспорт — сразу на проверку
+      let txt=''; try{ txt=normalizeTs(await extractText(f)); }catch(e){}
+      if(looksLikeTs(txt)){ rec.st='ok'; renderFiles(); state.files.splice(state.files.indexOf(rec),1); renderFiles(); await loadOldTs(f,txt); continue; }
+    }
+    await sleep(900+Math.random()*700); rec.st='ok'; renderFiles();
+    const guess=/генерат|cummins|дгу|дизел/i.test(f.name)?EQUIP[1]:EQUIP[0];
+    state.equip={...JSON.parse(JSON.stringify(guess)),src:'ocr'}; renderExtract();
+    toast(`OCR: распознано «${f.name}» — проверьте найденные данные`);
+  }
+  if(bad.length) toast(bad.join(' · '));
+}
+/* ---------- Загрузка старой ТС: DOCX / PDF / TXT ---------- */
+const W_NS='http://schemas.openxmlformats.org/wordprocessingml/2006/main';
+async function unzipEntry(buf,wanted){
+  const dv=new DataView(buf), dec=new TextDecoder();
+  let e=buf.byteLength-22; while(e>=0&&dv.getUint32(e,true)!==0x06054b50) e--;
+  if(e<0) throw new Error('Файл повреждён или это не DOCX');
+  const cnt=dv.getUint16(e+10,true); let p=dv.getUint32(e+16,true);
+  for(let i=0;i<cnt;i++){
+    if(dv.getUint32(p,true)!==0x02014b50) break;
+    const method=dv.getUint16(p+10,true), csize=dv.getUint32(p+20,true), nlen=dv.getUint16(p+28,true), xlen=dv.getUint16(p+30,true), clen=dv.getUint16(p+32,true), lho=dv.getUint32(p+42,true);
+    const name=dec.decode(new Uint8Array(buf,p+46,nlen));
+    if(name===wanted){
+      const ln=dv.getUint16(lho+26,true), lx=dv.getUint16(lho+28,true); const data=new Uint8Array(buf,lho+30+ln+lx,csize);
+      if(method===0) return data;
+      if(typeof DecompressionStream==='undefined') throw new Error('Браузер не умеет распаковывать DOCX — используйте последнюю версию Chrome / Edge / Yandex');
+      return new Uint8Array(await new Response(new Blob([data]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer());
+    }
+    p+=46+nlen+xlen+clen;
+  }
+  return null;
+}
+function docxToText(xml){
+  const doc=new DOMParser().parseFromString(xml,'application/xml');
+  const body=doc.getElementsByTagNameNS(W_NS,'body')[0]; if(!body) return '';
+  const attr=(el,n)=>el.getAttributeNS(W_NS,n)??el.getAttribute('w:'+n);
+  const out=[]; let hn=0;
+  const pText=p=>{ let s=''; const walk=n=>{ for(const c of n.childNodes){ if(c.nodeType!==1) continue; const l=c.localName;
+      if(l==='t') s+=c.textContent; else if(l==='tab') s+=' '; else if(l==='br'||l==='cr') s+='\n'; else if(l==='pPr'||l==='rPr'||l==='instrText'||l==='del') continue; else walk(c); } };
+    walk(p); return s.replace(/ /g,' ').replace(/[ \t]+/g,' ').trim(); };
+  const pInfo=p=>{ const pPr=[...p.childNodes].find(c=>c.localName==='pPr'); let num=false,ilvl=0,head=false;
+    if(pPr){ const np=pPr.getElementsByTagNameNS(W_NS,'numPr')[0]; if(np){ num=true; const il=np.getElementsByTagNameNS(W_NS,'ilvl')[0]; ilvl=il?(+attr(il,'val')||0):0; }
+      const ps=pPr.getElementsByTagNameNS(W_NS,'pStyle')[0]; if(ps&&/heading|заголов|^[1-3]$/i.test(attr(ps,'val')||'')) head=true; }
+    const runs=[...p.getElementsByTagNameNS(W_NS,'r')].filter(r=>r.textContent.trim());
+    const bold=runs.length>0&&runs.every(r=>{ const b=r.getElementsByTagNameNS(W_NS,'b')[0]; return b&&!/^(0|false)$/.test(attr(b,'val')||''); });
+    return {num,ilvl,head:head||bold}; };
+  const para=p=>{ const tx=pText(p); if(!tx) return; const inf=pInfo(p);
+    const isHead=tx.length<150&&SECT.some(s=>s.k.test(tx));
+    const mNum=/^(\d{1,2})[.)]\s+/.exec(tx);
+    if(isHead&&mNum&&!/^\d+\.\d/.test(tx)){ hn=+mNum[1]; out.push('',tx.replace(/^(\d{1,2})\)\s+/,'$1. ')); return; }
+    if(isHead&&!mNum&&((inf.num&&inf.ilvl===0)||inf.head)){ hn++; out.push('',`${hn}. ${tx}`); return; }
+    out.push(inf.num&&!mNum?`— ${tx}`:tx); };
+  const table=tbl=>{ let first=true, ruOnly=false;
+    for(const tr of [...tbl.childNodes].filter(c=>c.localName==='tr')){
+      let cells=[...tr.childNodes].filter(c=>c.localName==='tc').map(tc=>[...tc.getElementsByTagNameNS(W_NS,'p')].map(pText).filter(Boolean).join(' '));
+      if(first&&cells.length===2&&/русск/i.test(cells[0])&&/қазақ|казах/i.test(cells[1])){ ruOnly=true; first=false; continue; } // двуязычная ТС — берём русскую колонку
+      if(ruOnly){ const c=cells[0]||''; if(!c) continue; if(/^\s*\d{1,2}\.\s+[^\d\s]/.test(c)&&SECT.some(s=>s.k.test(c))) out.push(''); out.push(c); continue; }
+      cells=cells.filter(Boolean);
+      if(!cells.length) continue;
+      const hc=/^(\d{1,2})[.)]\s+([^\d\s].*)$/.exec(cells[0]);
+      if(hc&&cells[0].length<150&&SECT.some(s=>s.k.test(hc[2]))){ hn=+hc[1]; out.push('',`${hc[1]}. ${hc[2]}`); cells.slice(1).forEach(c=>out.push(c)); first=false; continue; }
+      if(cells.length>1&&/^\d+[.)]?$/.test(cells[0])) cells.shift();
+      if(first&&!/\d/.test(cells.join(' '))&&/наименовани|параметр|показател|характеристик|значени|ед\.?\s*изм|требовани/i.test(cells.join(' '))){ first=false; continue; }
+      first=false;
+      out.push(cells.length===1?cells[0]:`— ${cells[0].replace(/[:;.]$/,'')}: ${cells.slice(1).join(', ').replace(/[;.]$/,'')};`);
+    } };
+  const block=n=>{ for(const c of n.childNodes){ if(c.nodeType!==1) continue; if(c.localName==='p') para(c); else if(c.localName==='tbl') table(c); else if(c.localName==='sdt'||c.localName==='sdtContent') block(c); } };
+  block(body); return out.join('\n');
+}
+const PDFJS='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/';
+async function loadPdfJs(){
+  if(window.pdfjsLib) return window.pdfjsLib;
+  await new Promise((res,rej)=>{ const s=document.createElement('script'); s.src=PDFJS+'pdf.min.js'; s.onload=res; s.onerror=()=>rej(new Error('Не удалось загрузить модуль чтения PDF (нужен доступ к cdnjs.cloudflare.com). Сохраните ТС как DOCX или TXT.')); document.head.appendChild(s); });
+  const lib=window.pdfjsLib;
+  try{ const code=await fetch(PDFJS+'pdf.worker.min.js').then(r=>r.text()); lib.GlobalWorkerOptions.workerSrc=URL.createObjectURL(new Blob([code],{type:'text/javascript'})); }
+  catch(e){ lib.GlobalWorkerOptions.workerSrc=PDFJS+'pdf.worker.min.js'; }
+  return lib;
+}
+async function pdfToText(buf){
+  const lib=await loadPdfJs(); const pdf=await lib.getDocument({data:buf}).promise; const lines=[];
+  for(let i=1;i<=pdf.numPages;i++){
+    const tc=await (await pdf.getPage(i)).getTextContent(); let cur='', lastY=null;
+    for(const it of tc.items){ const y=it.transform?it.transform[5]:null;
+      if(lastY!=null&&y!=null&&Math.abs(y-lastY)>2&&cur){ lines.push(cur); cur=''; }
+      cur+=it.str||''; if(y!=null) lastY=y;
+      if(it.hasEOL){ lines.push(cur); cur=''; } }
+    if(cur) lines.push(cur); lines.push('');
+  }
+  const txt=lines.join('\n');
+  if(txt.replace(/\s/g,'').length<30) throw new Error('В PDF нет текстового слоя (скан). В рабочей версии такой файл пройдёт OCR; сейчас загрузите DOCX или TXT.');
+  // склеиваем строки, разорванные переносом в PDF
+  return txt.split('\n').reduce((a,l)=>{ const prev=a[a.length-1]; const t2=l.trim();
+    if(prev&&t2&&!/[.;:!?]$/.test(prev)&&/^[a-zа-яё(«"]/.test(t2)&&!/^\s*(—|-|•)/.test(t2)) a[a.length-1]=prev.replace(/-$/,'')+(prev.endsWith('-')?'':' ')+t2; else a.push(t2); return a; },[]).join('\n');
+}
+async function extractText(file){
+  const ext=(file.name.match(/\.([a-z0-9]+)$/i)||[])[1]?.toLowerCase();
+  if(ext==='txt'){ const buf=await file.arrayBuffer(); let s=new TextDecoder('utf-8').decode(buf); if((s.match(/�/g)||[]).length>5) s=new TextDecoder('windows-1251').decode(buf); return s; }
+  if(ext==='docx'){ const x=await unzipEntry(await file.arrayBuffer(),'word/document.xml'); if(!x) throw new Error('В DOCX не найден текст документа'); return docxToText(new TextDecoder().decode(x)); }
+  if(ext==='pdf') return pdfToText(await file.arrayBuffer());
+  throw new Error('Формат не поддерживается');
+}
+function normalizeTs(s){
+  return s.replace(/\r\n?/g,'\n').replace(/ /g,' ').split('\n')
+    .map(l=>l.replace(/[ \t]+/g,' ').trim().replace(/^[•·▪◦\-–]\s*/,'— '))
+    .map(l=>{ const m=/^(\d{1,2})\)\s+(.*)$/.exec(l); return m&&SECT.some(x=>x.k.test(m[2]))&&m[2].length<150?`${m[1]}. ${m[2]}`:l; })
+    .join('\n').replace(/\n(\d{1,2}\.\s+[^\d\s])/g,'\n\n$1').replace(/\n{3,}/g,'\n\n').trim();
+}
+const looksLikeTs=s=>s&&s.length>150&&/техническ\S*\s+(спецификац|задани)|характеристик|требовани\S*\s+к\s+(качеств|упаковк|поставк)/i.test(s);
+function detectMode(text){
+  const s5=parseSections(text)[5]; const c5=s5?s5.content.trim():'';
+  if(c5.length>=80&&!/не требуется/i.test(c5)) return 'unif';
+  if(/эквивалент/i.test(text)) return 'equiv';
+  return state.mode;
+}
+async function loadOldTs(file,preText){
+  if(/\.(doc|rtf)$/i.test(file.name)){ toast('Формат .doc / .rtf: откройте файл в Word и сохраните как DOCX или PDF'); return; }
+  if(!/\.(docx|pdf|txt)$/i.test(file.name)){ toast('Для старой ТС поддерживаются DOCX, PDF и TXT'); return; }
+  if(file.size>50*1048576){ toast('Файл больше 50 МБ'); return; }
+  let text=preText;
+  if(text==null){ try{ text=normalizeTs(await extractText(file)); }catch(e){ toast(e.message); return; } }
+  if(!text.trim()){ toast('В файле не найден текст'); return; }
+  if(state.text.trim()&&!confirm('Заменить текст в редакторе загруженной ТС? Текущая ТС сохранена в «Истории».')) return;
+  autosave();
+  await busy('Анализ загруженной ТС',[`Чтение «${file.name}»`,'Распознавание разделов по шаблону Порядка закупок','Проверка полноты, формулировок и товарных знаков','Проверка ГОСТ / СТ РК по локальной базе']);
+  newDoc(false); state.undo=[]; state.redo=[]; state.lastSnap=''; state.req=file.name;
+  const m=detectMode(text); setMode(m); setText(text);
+  const secs=Object.keys(parseSections(text)).length, st=state.stds.inText, badSt=st.filter(x=>!x.e||x.e.status!=='действующий').length;
+  showInfo(`<b>Загружена ТС «${esc(file.name)}».</b> Разделов по шаблону: ${secs} из 9 · стандартов в тексте: ${st.length}${badSt?` (<b style="color:var(--red)">${badSt} требуют внимания</b>)`:''} · режим: «${m==='unif'?t('unif'):t('equiv')}» · оценка <b>${state.total}%</b>. Замечания и исправления — справа.`,
+    [['kz','Перевести на казахский'],['std','Проверка ГОСТ'],['crit','Только критичные']]);
+}
+function showInfo(html,acts){
+  const el=$('#edInfo'); el.hidden=false;
+  el.innerHTML=`<div class="txt">${html}</div><div class="acts">${(acts||[]).map(([k,l])=>`<button type="button" class="btn sm" data-info="${k}">${l}</button>`).join('')}</div><button type="button" class="x" data-info="close" aria-label="Скрыть">×</button>`;
+}
+$('#edInfo').addEventListener('click',e=>{ const b=e.target.closest('[data-info]'); if(!b) return; const k=b.dataset.info;
+  if(k==='close') $('#edInfo').hidden=true;
+  else if(k==='kz') onTranslate();
+  else if(k==='std'){ state.filter='standards'; renderScore(); $('#stds').scrollIntoView({behavior:'smooth',block:'start'}); }
+  else if(k==='crit'){ state.filter=null; renderScore(); const c=document.querySelector('.iss.crit'); if(c) c.scrollIntoView({behavior:'smooth',block:'center'}); } });
+const tsIn=$('#tsInput'), dts=$('#dropTs');
+dts.addEventListener('click',()=>tsIn.click());
+tsIn.addEventListener('change',()=>{ if(tsIn.files[0]) loadOldTs(tsIn.files[0]); tsIn.value=''; });
+['dragenter','dragover'].forEach(ev=>dts.addEventListener(ev,e=>{ e.preventDefault(); dts.classList.add('over'); }));
+['dragleave','drop'].forEach(ev=>dts.addEventListener(ev,e=>{ e.preventDefault(); dts.classList.remove('over'); }));
+dts.addEventListener('drop',e=>{ if(e.dataTransfer.files[0]) loadOldTs(e.dataTransfer.files[0]); });
+const edw=$('.ed-wrap');
+edw.addEventListener('dragover',e=>{ if([...e.dataTransfer.types].includes('Files')){ e.preventDefault(); edw.classList.add('over'); } });
+edw.addEventListener('dragleave',()=>edw.classList.remove('over'));
+edw.addEventListener('drop',e=>{ e.preventDefault(); edw.classList.remove('over'); if(e.dataTransfer.files[0]) loadOldTs(e.dataTransfer.files[0]); });
+
+const drop=$('#drop'), fi=$('#fileInput');
+drop.addEventListener('click',()=>fi.click());
+drop.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); fi.click(); } });
+fi.addEventListener('change',()=>{ handleFiles(fi.files); fi.value=''; });
+['dragenter','dragover'].forEach(ev=>drop.addEventListener(ev,e=>{ e.preventDefault(); drop.classList.add('over'); }));
+['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{ e.preventDefault(); drop.classList.remove('over'); }));
+drop.addEventListener('drop',e=>handleFiles(e.dataTransfer.files));
+
+function renderExtract(){
+  const box=$('#extract'), e=state.equip;
+  if(!e){ box.hidden=true; box.innerHTML=''; $('#sel1c').value=''; return; }
+  box.hidden=false;
+  const f=(k,lab)=>`<label><span>${t(lab)}</span><input type="text" data-eq="${k}" value="${esc(e[k])}"></label>`;
+  box.innerHTML=`<div class="extract-head"><b>${e.src==='1c'?t('card1c'):t('found')}</b><span class="tag">${e.src==='1c'?'1С:УПП · '+esc(e.place):'OCR · RU / KZ / EN · демо'}</span><button type="button" class="x" id="exClose" aria-label="Скрыть">×</button></div>
+   <div class="extract-grid">${f('name','eqName')}${f('brand','eqBrand')}${f('model','eqModel')}${f('serial','eqSerial')}${f('year','eqYear')}</div>
+   <div class="lbl" style="margin:12px 0 4px">${t('consT')}</div>
+   <div class="cons">${e.cons.map((c,i)=>`<div class="cons-row"><input type="checkbox" data-con="${i}" ${c.on===false?'':'checked'} aria-label="Включить в ТС"><span>${CONS[c.kind].ru}</span><input type="text" data-cat="${i}" value="${esc(c.cat)}" aria-label="Каталожный номер"><input type="number" min="1" data-qty="${i}" value="${c.qty}" aria-label="Количество, шт."></div>`).join('')}</div>`;
+}
+$('#extract').addEventListener('input',ev=>{ const e=state.equip; if(!e) return; const el=ev.target;
+  if(el.dataset.eq){ e[el.dataset.eq]=el.value; if(el.dataset.eq==='name'){ e.gen=lowerFirst(el.value); } }
+  if(el.dataset.cat) e.cons[+el.dataset.cat].cat=el.value;
+  if(el.dataset.qty) e.cons[+el.dataset.qty].qty=Math.max(1,+el.value||1);
+  if(el.dataset.con) e.cons[+el.dataset.con].on=el.checked; });
+$('#extract').addEventListener('change',ev=>{ if(ev.target.dataset.con&&state.equip) state.equip.cons[+ev.target.dataset.con].on=ev.target.checked; });
+$('#extract').addEventListener('click',ev=>{ if(ev.target.id==='exClose'){ state.equip=null; renderExtract(); } });
+EQUIP.forEach(e=>{ const o=document.createElement('option'); o.value=e.id; o.textContent=`${e.name} ${e.brand} ${e.model} · инв. № ${e.inv}`; $('#sel1c').appendChild(o); });
+$('#sel1c').addEventListener('change',async ev=>{ const e=EQUIP.find(x=>x.id===ev.target.value); if(!e){ state.equip=null; renderExtract(); return; }
+  state.equip={...JSON.parse(JSON.stringify(e)),src:'1c'}; renderExtract(); $('#sel1c').value=e.id; toast('Карточка ОС загружена из 1С:УПП (демо)'); });
+
+/* ================= Перевод ================= */
+function splitLine(s){ const m=/^(\s*(?:—|-|•)\s*)?(.*?)([;.:]?)$/.exec(s); return {pre:m[1]||'',core:m[2],suf:m[3]}; }
+function lookupKnown(ru){
+  if(state.kzMap[ru]) return state.kzMap[ru]; if(KNOWN[ru]) return KNOWN[ru];
+  return null;
+}
+const LETTER=/[А-Яа-яЁёA-Za-z]/;
+function glossLine(line){
+  const lower=line.toLowerCase(); let out='',txt='',i=0,unk=0;
+  while(i<line.length){
+    const prevL=i>0&&LETTER.test(line[i-1]);
+    if(/[А-Яа-яЁё]/.test(line[i])&&!prevL){
+      let hit=null;
+      for(const g of GLOSS){ if(lower.startsWith(g.ru,i)){ const nx=line[i+g.ru.length]; if(g.stem||!nx||!/[А-Яа-яЁё]/.test(nx)){ hit=g; break; } } }
+      if(hit){ let end=i+hit.ru.length; if(hit.stem) while(end<line.length&&/[А-Яа-яЁё]/.test(line[end])) end++;
+        let kz=hit.kz; if(line[i]!==line[i].toLowerCase()) kz=cap(kz);
+        out+=`<span class="gl" title="Глоссарий: ${esc(line.slice(i,end))} → ${esc(kz)}">${esc(kz)}</span>`; txt+=kz; i=end; continue; }
+      const m=/^[А-Яа-яЁё]+/.exec(line.slice(i)); unk++;
+      out+=`<span class="unk" title="Нет в глоссарии — требует проверки">${esc(m[0])}</span>`; txt+=m[0]; i+=m[0].length; continue;
+    }
+    out+=esc(line[i]); txt+=line[i]; i++;
+  }
+  return {txt,html:out,unk};
+}
+function hlGloss(kz){
+  let h=esc(kz); if(!GLOSS_KZ.length) return h;
+  const re=new RegExp(`(${GLOSS_KZ.map(reEsc).join('|')})`,'gi');
+  return h.replace(re,'<span class="gl">$1</span>');
+}
+function tokens(s){ return (s.match(/(?:ГОСТ|СТ РК)\s?[\d.]+-\d+|[A-Z]{1,5}[A-Z0-9-]*\d[A-Z0-9-]*|\d+(?:[.,]\d+)?/g)||[]).map(x=>x.replace(/\s/g,'')).sort(); }
+function numDiff(ru,kz){ const a=tokens(ru), b=tokens(kz); const miss=[...a]; const extra=[];
+  b.forEach(x=>{ const k=miss.indexOf(x); if(k>=0) miss.splice(k,1); else extra.push(x); }); return {miss,extra,bad:miss.length+extra.length>0}; }
+function buildKz(){
+  const lines=state.text.split('\n'); const prev=state.kz||[];
+  state.kz=lines.map((ru,i)=>{
+    const p=prev[i]; if(p&&p.ru===ru&&p.edited) return p;
+    if(!ru.trim()) return {ru,kz:'',src:'empty'};
+    let known=lookupKnown(ru);
+    if(known==null){ const sp=splitLine(ru); const k2=KNOWN[sp.core]||state.kzMap[sp.core]; if(k2) known=sp.pre+k2+sp.suf; }
+    if(known==null){ const hm=/^\s*(\d{1,2})\.\s+([^\d\s].*)$/.exec(ru); const s=hm&&hm[2].length<150&&SECT.find(x=>x.k.test(hm[2])); if(s) known=`${hm[1]}. ${s.kz}`; }
+    if(known!=null) return {ru,kz:known,src:'known',html:hlGloss(known)};
+    const g=glossLine(ru); return {ru,kz:g.txt,src:'gloss',html:g.html,unk:g.unk};
+  });
+}
+async function onTranslate(){
+  if(!state.text.trim()){ toast(t('noTextHint')); return; }
+  const ids=(state.text.match(/зав\.\s*№\s*[^,)\n]+|инв\.\s*№\s*[^,)\n]+|серийн\S*\s+(?:номер|№)\s*[^,)\n]+/gi)||[]).length;
+  await busy('Қазақ тіліне аудару',[
+    'Позиция в очереди: 1 · канал: '+chanText(),
+    state.conf?'Документ конфиденциальный — внешние API не используются':`Обезличивание: скрыто идентификаторов — ${ids}`,
+    `Отраслевой глоссарий: ${state.profile.ind} (+ termincom.kz, утверждённые термины)`,
+    'Перевод с сохранением чисел, единиц, номеров стандартов','Сверка чисел и кодов']);
+  buildKz(); openKz(); autosave();
+}
+function rowFlag(r){ if(r.src==='empty') return {bad:false}; return numDiff(r.ru,r.kz); }
+function openKz(){
+  const g=$('#kzGrid');
+  let h=`<div class="kz-colh">Русский</div><div class="kz-colh">Қазақша (редактируется)</div><div class="kz-colh" aria-hidden="true"></div>`;
+  state.kz.forEach((r,i)=>{ if(r.src==='empty'){ h+=`<div class="kz-ru">&nbsp;</div><div class="kz-kz" style="min-height:1em"></div><div class="kz-flag"></div>`; return; }
+    const cls=lineClass(r.ru); const d=rowFlag(r);
+    const word=!d.bad&&r.src==='gloss'&&!r.edited;
+    h+=`<div class="kz-ru ${cls}">${esc(r.ru)}</div><div class="kz-kz ${cls} ${d.bad?'kz-row-bad':''}" contenteditable="true" spellcheck="false" data-i="${i}" lang="kk">${r.edited?esc(r.kz):(r.html||esc(r.kz))}</div><div class="kz-flag ${d.bad?'bad':word?'word':''}" id="kzf${i}" title="${d.bad?esc('Расхождение: '+[...d.miss.map(x=>'нет '+x),...d.extra.map(x=>'лишнее '+x)].join(', ')):word?'Строка не из шаблона: переведена пословно по глоссарию (демо). В рабочей версии её переводит LLM / API перевода — проверьте и отредактируйте.':''}">${d.bad?'⚠':word?'◐':''}</div>`; });
+  g.innerHTML=h; $('#kzChan').textContent=state.conf?'Локальная модель':'Внешний API · обезличивание'; $('#kzIndustry').textContent='Глоссарий: '+state.profile.ind;
+  kzStats(); const dlg=$('#dlgKz'); if(!dlg.open) dlg.showModal();
+}
+function kzStats(){
+  const rows=state.kz.filter(r=>r.src!=='empty'); const known=rows.filter(r=>r.src==='known'&&!r.edited).length;
+  const unk=rows.reduce((a,r)=>a+(r.edited?0:(r.unk||0)),0); const bad=rows.filter(r=>rowFlag(r).bad).length;
+  const word=rows.filter(r=>r.src==='gloss'&&!r.edited).length;
+  $('#kzStats').innerHTML=`Строк: ${rows.length} · по шаблону и глоссарию: ${known} · пословно (проверить): ${word} · терминов на проверку: <b style="color:${unk?'var(--yel)':'inherit'}">${unk}</b> · расхождений чисел: <b style="color:${bad?'var(--red)':'var(--green)'}">${bad}</b>`;
+}
+$('#kzGrid').addEventListener('input',e=>{ const el=e.target.closest('[data-i]'); if(!el) return; const i=+el.dataset.i, r=state.kz[i];
+  r.kz=el.textContent; r.edited=true; const d=rowFlag(r); el.classList.toggle('kz-row-bad',d.bad);
+  const f=$('#kzf'+i); f.className='kz-flag'+(d.bad?' bad':''); f.textContent=d.bad?'⚠':''; f.title=d.bad?'Расхождение: '+[...d.miss.map(x=>'нет '+x),...d.extra.map(x=>'лишнее '+x)].join(', '):'';
+  kzStats(); clearTimeout(tSave); tSave=setTimeout(autosave,800); });
+$('#kzGrid').addEventListener('paste',e=>{ if(!e.target.closest('[data-i]')) return; e.preventDefault(); document.execCommand('insertText',false,(e.clipboardData.getData('text/plain')||'').replace(/\n+/g,' ')); });
+$('#kzGrid').addEventListener('keydown',e=>{ if(e.key==='Enter'&&e.target.closest('[data-i]')) e.preventDefault(); });
+$('#kzClose').addEventListener('click',()=>$('#dlgKz').close());
+$('#kzDone').addEventListener('click',()=>{ $('#dlgKz').close(); toast('Казахская версия сохранена в черновике'); });
+
+/* ================= Экспорт ================= */
+const CRC_T=(()=>{const tb=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;tb[n]=c>>>0;}return tb;})();
+function crc32(u){let c=0xFFFFFFFF;for(let i=0;i<u.length;i++)c=CRC_T[(c^u[i])&0xFF]^(c>>>8);return (c^0xFFFFFFFF)>>>0;}
+function zip(files){
+  const enc=new TextEncoder(), parts=[], central=[]; let offset=0; const d=new Date();
+  const dt=(d.getHours()<<11)|(d.getMinutes()<<5)|(d.getSeconds()>>1), dd=((d.getFullYear()-1980)<<9)|((d.getMonth()+1)<<5)|d.getDate();
+  for(const f of files){
+    const name=enc.encode(f.name), data=enc.encode(f.data), crc=crc32(data);
+    const lh=new DataView(new ArrayBuffer(30));
+    lh.setUint32(0,0x04034b50,true);lh.setUint16(4,20,true);lh.setUint16(6,0x0800,true);lh.setUint16(8,0,true);lh.setUint16(10,dt,true);lh.setUint16(12,dd,true);
+    lh.setUint32(14,crc,true);lh.setUint32(18,data.length,true);lh.setUint32(22,data.length,true);lh.setUint16(26,name.length,true);lh.setUint16(28,0,true);
+    parts.push(new Uint8Array(lh.buffer),name,data);
+    const ch=new DataView(new ArrayBuffer(46));
+    ch.setUint32(0,0x02014b50,true);ch.setUint16(4,20,true);ch.setUint16(6,20,true);ch.setUint16(8,0x0800,true);ch.setUint16(10,0,true);ch.setUint16(12,dt,true);ch.setUint16(14,dd,true);
+    ch.setUint32(16,crc,true);ch.setUint32(20,data.length,true);ch.setUint32(24,data.length,true);ch.setUint16(28,name.length,true);
+    ch.setUint16(30,0,true);ch.setUint16(32,0,true);ch.setUint16(34,0,true);ch.setUint16(36,0,true);ch.setUint32(38,0,true);ch.setUint32(42,offset,true);
+    central.push(new Uint8Array(ch.buffer),name); offset+=30+name.length+data.length;
+  }
+  const cd=central.reduce((a,p)=>a+p.length,0), end=new DataView(new ArrayBuffer(22));
+  end.setUint32(0,0x06054b50,true);end.setUint16(8,files.length,true);end.setUint16(10,files.length,true);end.setUint32(12,cd,true);end.setUint32(16,offset,true);
+  return new Blob([...parts,...central,new Uint8Array(end.buffer)],{type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+}
+const xesc=s=>String(s).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g,'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const xr=(s,o)=>`<w:r><w:rPr><w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:cs="Times New Roman"/>${o.b?'<w:b/>':''}<w:sz w:val="${o.sz||24}"/></w:rPr><w:t xml:space="preserve">${xesc(s)}</w:t></w:r>`;
+const xp=(s,o={})=>`<w:p><w:pPr>${o.center?'<w:jc w:val="center"/>':''}<w:spacing w:after="${o.after!=null?o.after:60}"/></w:pPr>${s?xr(s,o):''}</w:p>`;
+const lineOpts=ln=>{ const c=lineClass(ln); return c==='ln-title'?{b:true,sz:28,center:true,after:160}:c==='ln-h'?{b:true,after:60}:c==='ln-sub'?{b:true}:{}; };
+function docxBody(kind){
+  const ru=state.text.split('\n');
+  if(kind==='ru') return ru.map(l=>xp(l,lineOpts(l))).join('');
+  if(kind==='kz') return state.kz.map(r=>xp(r.kz,lineOpts(r.ru))).join('');
+  if(kind==='seq') return ru.map(l=>xp(l,lineOpts(l))).join('')+'<w:p><w:r><w:br w:type="page"/></w:r></w:p>'+state.kz.map(r=>xp(r.kz,lineOpts(r.ru))).join('');
+  const cell=(s,o)=>`<w:tc><w:tcPr><w:tcW w:w="2500" w:type="pct"/></w:tcPr>${xp(s,o)}</w:tc>`;
+  const b='<w:top w:val="single" w:sz="4" w:color="A0AEB8"/><w:left w:val="single" w:sz="4" w:color="A0AEB8"/><w:bottom w:val="single" w:sz="4" w:color="A0AEB8"/><w:right w:val="single" w:sz="4" w:color="A0AEB8"/><w:insideH w:val="single" w:sz="4" w:color="A0AEB8"/><w:insideV w:val="single" w:sz="4" w:color="A0AEB8"/>';
+  let rows=`<w:tr>${cell('Русский язык',{b:true})}${cell('Қазақ тілі',{b:true})}</w:tr>`;
+  state.kz.forEach(r=>{ if(r.src==='empty') return; const o=lineOpts(r.ru); delete o.center; rows+=`<w:tr>${cell(r.ru,o)}${cell(r.kz,o)}</w:tr>`; });
+  return `<w:tbl><w:tblPr><w:tblW w:w="5000" w:type="pct"/><w:tblBorders>${b}</w:tblBorders><w:tblLayout w:type="fixed"/></w:tblPr><w:tblGrid><w:gridCol w:w="4819"/><w:gridCol w:w="4819"/></w:tblGrid>${rows}</w:tbl><w:p/>`;
+}
+function docName(){
+  const s=parseSections(state.text)[1]; let n=s?s.content.trim().split('\n')[0]:state.text.trim().split('\n').find(l=>l.trim()&&!/ТЕХНИЧЕСКАЯ/i.test(l))||'ТС';
+  return n.replace(/\s*\(.*$/,'').replace(/[.:;,]+$/,'').trim();
+}
+function fileName(sfx){
+  const d=new Date(), ds=`${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${d.getFullYear()}`;
+  const nm=docName().slice(0,50).replace(/[\\/:*?"<>|«»]/g,'').replace(/\s+/g,'_');
+  return `ТС_${nm}_${ds}${sfx||''}.docx`;
+}
+function download(blob,name){ const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },500); }
+function exportDocx(kind){
+  if(!state.text.trim()){ toast(t('noTextHint')); return; }
+  if(kind!=='ru') ensureKz();
+  const doc=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>${docxBody(kind)}<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1134" w:right="850" w:bottom="1134" w:left="1418" w:header="708" w:footer="708" w:gutter="0"/></w:sectPr></w:body></w:document>`;
+  const blob=zip([
+    {name:'[Content_Types].xml',data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>'},
+    {name:'_rels/.rels',data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>'},
+    {name:'word/document.xml',data:doc}]);
+  const name=fileName(kind==='kz'?'_KZ':kind==='bi'?'_RU-KZ_таблица':kind==='seq'?'_RU+KZ':''); download(blob,name); toast('Скачан файл '+name);
+}
+function ensureKz(){ const ru=state.text.split('\n'); if(!state.kz||state.kz.length!==ru.length||state.kz.some((r,i)=>r.ru!==ru[i])) buildKz(); }
+const kzPlain=()=>state.kz.map(r=>r.kz).join('\n');
+function exportPdf(kind){
+  if(!state.text.trim()){ toast(t('noTextHint')); return; }
+  const part=lines=>lines.map(([l,ref])=>{ const c=lineClass(ref); return `<div class="${c==='ln-title'?'p-title':c==='ln-h'?'p-h':''}">${esc(l)||'&nbsp;'}</div>`; }).join('');
+  let h=part(state.text.split('\n').map(l=>[l,l]));
+  if(kind==='seq'){ ensureKz(); h+='<div class="p-break"></div>'+part(state.kz.map(r=>[r.kz,r.ru])); }
+  $('#printArea').innerHTML=h; window.print();
+}
+async function copyText(kind){
+  if(!state.text.trim()){ toast(t('noTextHint')); return; }
+  if(kind!=='ru') ensureKz();
+  const txt=kind==='kz'?kzPlain():kind==='seq'?state.text.replace(/\s+$/,'')+'\n\n\n'+kzPlain():state.text;
+  const msg=kind==='kz'?'Казахский текст скопирован — вставьте его на портал':kind==='seq'?'Скопировано: сначала RU, затем KZ — вставьте на портал':'Русский текст ТС скопирован';
+  try{ await navigator.clipboard.writeText(txt); toast(msg); }
+  catch(e){ const ta=document.createElement('textarea'); ta.value=txt; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); toast(msg); }
+}
+async function to1C(){
+  if(!state.text.trim()){ toast(t('noTextHint')); return; }
+  if(state.total!=null&&state.total<60&&!confirm(`Оценка ТС ${state.total}% (красная зона). Всё равно создать заявку в 1С:УПП?`)) return;
+  await busy('Обмен с 1С:УПП',['Сопоставление с базой предприятия: '+state.profile.ent,'Поиск позиций в справочнике номенклатуры','Создание документа «Заявка на закупку»','Прикрепление ТС (RU'+(state.kz?' + KZ':'')+')']);
+  const num='ЗП-'+String(Math.floor(100000+Math.random()*899999));
+  state.reqStatus=`${num} · на согласовании`; autosave(); toast(`Заявка ${num} создана в 1С:УПП (демо) — статус в «Истории»`);
+}
+function runExport(k){ closeMenu(); ({ru:()=>exportDocx('ru'),kz:()=>exportDocx('kz'),bi:()=>exportDocx('bi'),seq:()=>exportDocx('seq'),pdf:()=>exportPdf('ru'),pdfseq:()=>exportPdf('seq'),copy:()=>copyText('ru'),cpkz:()=>copyText('kz'),cpseq:()=>copyText('seq'),'1c':to1C})[k](); }
+const menu=$('#exportMenu'), bEx=$('#btnExport');
+function closeMenu(){ menu.hidden=true; bEx.setAttribute('aria-expanded','false'); }
+bEx.addEventListener('click',e=>{ e.stopPropagation(); menu.hidden=!menu.hidden; bEx.setAttribute('aria-expanded',String(!menu.hidden)); if(!menu.hidden) menu.querySelector('button').focus(); });
+menu.addEventListener('click',e=>{ const b=e.target.closest('[data-ex]'); if(b) runExport(b.dataset.ex); });
+menu.addEventListener('keydown',e=>{ const items=[...menu.querySelectorAll('button')], i=items.indexOf(document.activeElement);
+  if(e.key==='ArrowDown'){ e.preventDefault(); items[(i+1)%items.length].focus(); } else if(e.key==='ArrowUp'){ e.preventDefault(); items[(i-1+items.length)%items.length].focus(); } else if(e.key==='Escape'){ closeMenu(); bEx.focus(); } });
+document.addEventListener('click',e=>{ if(!e.target.closest('.menu-wrap')) closeMenu(); });
+$('#dlgKz').addEventListener('click',e=>{ const b=e.target.closest('[data-ex]'); if(b) runExport(b.dataset.ex); });
+
+/* ================= Черновики и история ================= */
+function updDocName(){ $('#docName').textContent=state.text.trim()?docName():''; }
+function autosave(){
+  updDocName(); if(!state.text.trim()||!state.docId) return;
+  const drafts=store.get('ts-drafts',[]); const i=drafts.findIndex(d=>d.id===state.docId);
+  const d={id:state.docId,title:docName(),text:state.text,mode:state.mode,score:state.total,updated:Date.now(),kz:state.kz,kzMap:state.kzMap,req:state.req,reqStatus:state.reqStatus};
+  if(i>=0) drafts[i]=d; else drafts.unshift(d);
+  drafts.sort((a,b)=>b.updated-a.updated); store.set('ts-drafts',drafts.slice(0,30));
+  if(state.analyzedText===state.text) setStatus(`${t('saved')} · ${now()}`);
+}
+function setStatus(s){ $('#edStatus').textContent=s; }
+function loadDraft(d,asCopy){
+  state.docId=asCopy?'ts'+Date.now().toString(36):d.id; state.kzMap=d.kzMap||{}; state.kz=asCopy?null:(d.kz||null); state.req=d.req||''; state.reqStatus=asCopy?null:(d.reqStatus||null);
+  setMode(d.mode||'equiv'); state.undo=[]; state.redo=[]; state.lastSnap=d.text; state.text=d.text; state.filter=null; render(false); check(); autosave();
+  toast(asCopy?'Создана новая ТС на основе выбранной':'ТС открыта');
+}
+function renderHistory(){
+  const drafts=store.get('ts-drafts',[]); const L=$('#histList');
+  if(!drafts.length){ L.innerHTML=`<p class="muted">${t('histEmpty')}</p>`; return; }
+  L.innerHTML=drafts.map(d=>{ const z=d.score!=null?zone(d.score):null;
+    return `<div class="hcard ${d.id===state.docId?'cur':''}"><b>${esc(d.title||'Без названия')}</b>
+    <div class="hmeta"><span>${new Date(d.updated).toLocaleString('ru-RU',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'})}</span>${z?`<span class="pill ${z.cls}">${z.icon} ${d.score}%</span>`:''}<span>${d.mode==='unif'?t('unif'):t('equiv')}</span>${d.kz?'<span>RU + KZ</span>':''}${d.reqStatus?`<span>1С: ${esc(d.reqStatus)}</span>`:''}</div>
+    <div class="hact"><button type="button" class="btn sm primary" data-open="${d.id}">${t('open')}</button><button type="button" class="btn sm" data-copy="${d.id}">${t('copyFrom')}</button><button type="button" class="btn sm" data-del="${d.id}">${t('del')}</button></div></div>`; }).join('');
+}
+$('#btnHistory').addEventListener('click',()=>{ renderHistory(); $('#dlgHistory').showModal(); });
+$('#histClose').addEventListener('click',()=>$('#dlgHistory').close());
+$('#histList').addEventListener('click',e=>{ const drafts=store.get('ts-drafts',[]); const b=e.target.closest('button'); if(!b) return;
+  const id=b.dataset.open||b.dataset.copy||b.dataset.del; const d=drafts.find(x=>x.id===id); if(!d) return;
+  if(b.dataset.del){ if(!confirm(`Удалить черновик «${d.title}»?`)) return; store.set('ts-drafts',drafts.filter(x=>x.id!==id)); if(id===state.docId) state.docId='ts'+Date.now().toString(36); renderHistory(); return; }
+  loadDraft(d,!!b.dataset.copy); $('#dlgHistory').close(); });
+$('#dlgHistory').addEventListener('click',e=>{ if(e.target===$('#dlgHistory')) $('#dlgHistory').close(); });
+
+/* ================= Профиль и веса ================= */
+function fillProfile(){
+  const p=state.profile;
+  $('#pEnt').innerHTML=ENTERPRISES.map(x=>`<option ${x===p.ent?'selected':''}>${esc(x)}</option>`).join('');
+  $('#pInd').innerHTML=INDUSTRIES.map(x=>`<option ${x===p.ind?'selected':''}>${esc(x)}</option>`).join('');
+  $('#pName').value=p.name; $('#pRole').value=p.role;
+  $('#wGrid').innerHTML=CRIT.map(c=>`<label for="w_${c.id}">${t('c_'+c.id)}</label><input type="number" min="0" max="100" id="w_${c.id}" value="${state.weights[c.id]}">`).join('');
+  updW();
+}
+function updW(){ const admin=$('#pRole').value==='admin'; $$('#wGrid input').forEach(i=>i.disabled=!admin);
+  const s=CRIT.reduce((a,c)=>a+(+$('#w_'+c.id).value||0),0); $('#wSum').textContent=(admin?'':'Изменять веса может только администратор. ')+`Сумма весов: ${s}%`+(s!==100?' — итог нормируется':''); }
+$('#pRole').addEventListener('change',updW); $('#wGrid').addEventListener('input',updW);
+$('#btnProfile').addEventListener('click',()=>{ fillProfile(); $('#dlgProfile').returnValue=''; $('#dlgProfile').showModal(); });
+$('#dlgProfile').addEventListener('close',()=>{ if($('#dlgProfile').returnValue!=='ok') return;
+  state.profile={name:$('#pName').value.trim()||'Инициатор',role:$('#pRole').value,ent:$('#pEnt').value,ind:$('#pInd').value}; store.set('ts-profile',state.profile);
+  if(state.profile.role==='admin'){ CRIT.forEach(c=>state.weights[c.id]=Math.max(0,+$('#w_'+c.id).value||0)); store.set('ts-weights',state.weights); }
+  applyProfile(); check(); toast('Профиль сохранён'); });
+function applyProfile(){ $('#profName').textContent=state.profile.name; $('#profInit').textContent=(state.profile.name[0]||'И').toUpperCase(); }
+
+/* ================= Режим, канал, язык ================= */
+function setMode(m){ state.mode=m; $$('input[name=mode]').forEach(r=>r.checked=r.value===m); }
+$$('input[name=mode]').forEach(r=>r.addEventListener('change',()=>{ state.mode=r.value; if(state.text.trim()){ check(); toast(state.mode==='unif'?'Режим «Унификация»: требуется обоснование в разделе 5':'Режим «Допускается эквивалент»: проверяем товарные знаки'); } }));
+function updChan(){ const c=$('#chan'); c.classList.toggle('loc',state.conf); c.querySelector('span').textContent=state.conf?t('chanLoc'):t('chanExt'); c.title=state.conf?'Документ обрабатывается только локальной моделью в контуре компании':'Перед отправкой во внешние API удаляются ФИО, серийные и инвентарные номера, наименования объектов'; }
+$('#conf').addEventListener('change',e=>{ state.conf=e.target.checked; updChan(); });
+function applyI18n(){
+  $$('[data-i18n]').forEach(el=>el.textContent=t(el.dataset.i18n));
+  $$('[data-i18n-ph]').forEach(el=>el.placeholder=t(el.dataset.i18nPh));
+  $$('.lang button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.lang===state.lang)));
+  document.documentElement.lang=state.lang==='kz'?'kk':'ru';
+  updChan(); renderScore(); if(state.equip) renderExtract();
+}
+$$('.lang button').forEach(b=>b.addEventListener('click',()=>{ state.lang=b.dataset.lang; store.set('ts-lang',state.lang); applyI18n(); }));
+
+/* ================= Разделитель ================= */
+const sp=$('#splitter'), ws=$('#ws');
+function setSplit(p){ p=Math.min(75,Math.max(35,p)); ws.style.setProperty('--split',p+'%'); sp.setAttribute('aria-valuenow',Math.round(p)); store.set('ts-split',p); }
+sp.addEventListener('pointerdown',e=>{ sp.setPointerCapture(e.pointerId); sp.classList.add('drag'); });
+sp.addEventListener('pointermove',e=>{ if(!sp.classList.contains('drag')) return; const r=ws.getBoundingClientRect(); const pl=parseFloat(getComputedStyle(ws).paddingLeft); setSplit((e.clientX-r.left-pl)/(r.width-2*pl)*100); });
+sp.addEventListener('pointerup',()=>sp.classList.remove('drag'));
+sp.addEventListener('keydown',e=>{ const cur=store.get('ts-split',60); if(e.key==='ArrowLeft') setSplit(cur-2); if(e.key==='ArrowRight') setSplit(cur+2); });
+
+/* ================= Кнопки ================= */
+$('#btnGen').addEventListener('click',onGenerate);
+$('#btnNew').addEventListener('click',()=>{ if(state.text.trim()&&!confirm('Начать новую ТС? Текущая сохранена в «Истории».')) return; autosave(); newDoc(true); state.files=[]; renderFiles(); state.equip=null; renderExtract(); $('#need').value=''; toast('Новая ТС'); });
+$('#btnSample').addEventListener('click',()=>{ if(state.text.trim()&&!confirm('Заменить текст в редакторе примером ТС с ошибками?')) return; newDoc(false); setMode('equiv'); state.undo=[]; state.redo=[]; state.lastSnap=''; setText(SAMPLE); toast(`Пример загружен · оценка ${state.total}% — нажимайте «Применить» в замечаниях`); });
+$('#btnCheck').addEventListener('click',()=>{ state.text=ed.textContent; check(); toast(state.total==null?t('noTextHint'):`${t('scoreTitle')}: ${state.total}% — ${t(zone(state.total).key)}`); });
+$('#btnKz').addEventListener('click',onTranslate);
+$('#btnUndo').addEventListener('click',undo); $('#btnRedo').addEventListener('click',redo);
+
+let tToast; function toast(msg){ const el=$('#toast'); el.textContent=msg; el.classList.add('show'); clearTimeout(tToast); tToast=setTimeout(()=>el.classList.remove('show'),3600); }
+
+/* ================= Старт ================= */
+setSplit(store.get('ts-split',60)); applyProfile(); applyI18n(); updUndo();
+const drafts=store.get('ts-drafts',[]);
+if(drafts.length){ const d=drafts[0]; state.docId=d.id; state.kzMap=d.kzMap||{}; state.kz=d.kz||null; state.req=d.req||''; state.reqStatus=d.reqStatus||null; setMode(d.mode||'equiv'); state.text=d.text; state.lastSnap=d.text; render(false); check(); }
+else { newDoc(true); }
+})();
+</script>
+</body>
+</html>
